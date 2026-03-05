@@ -1,30 +1,23 @@
 """
-Vercel/Render Entry Point for BA Copilot API
+Render Entry Point for BA Copilot API
 """
 import sys
 import os
 from pathlib import Path
 import traceback
 
-# ------------------------------------------------------
 # Setup Python path
-# ------------------------------------------------------
 root_dir = Path(__file__).parent
-
-# Add root + backend to Python path
 sys.path.insert(0, str(root_dir))
 sys.path.insert(0, str(root_dir / "backend"))
 
 print(f"Root directory: {root_dir}")
 print(f"Python path: {sys.path[:3]}")
 
-# ------------------------------------------------------
 # Try importing the real FastAPI app
-# ------------------------------------------------------
 try:
     print("Attempting to import backend.api.main...")
-    from backend.api import main as main_module
-    app = main_module.app
+    from backend.api.main import app
     print("✅ Successfully imported FastAPI app")
 
 except Exception as e:
@@ -42,7 +35,6 @@ except Exception as e:
         "traceback": traceback.format_exc(),
         "python_path": sys.path[:5],
         "root_dir": str(root_dir),
-        "files_in_root": [str(f) for f in root_dir.iterdir()][:20]
     }
 
     @app.get("/")
@@ -52,31 +44,16 @@ except Exception as e:
 
     print("Created fallback error app")
 
-# ------------------------------------------------------
-# DEBUG ROUTE (now app is defined)
-# ------------------------------------------------------
+
+# Debug route
 @app.get("/debug/files")
 def debug_files():
-    """
-    Shows the full folder structure on Render filesystem.
-    This will help us verify whether backend/api actually exists.
-    """
     root = "/opt/render/project/src"
     result = {}
-
     for dirpath, dirnames, filenames in os.walk(root):
         rel = dirpath.replace(root, "")
         result[rel if rel else "/"] = {
             "dirs": dirnames,
             "files": filenames
         }
-
     return result
-
-# ------------------------------------------------------
-# Mangum handler
-# ------------------------------------------------------
-from mangum import Mangum
-handler = Mangum(app, lifespan="off")
-
-print("✅ Handler created successfully")
