@@ -49,7 +49,7 @@ class APIConfig:
     # CHAT_MODEL = "deepseek/deepseek-chat-v3-0324:free"
     
     # Option 3: Llama 3.3 70B (Great general purpose)
-    CHAT_MODEL = "openrouter/auto"
+    CHAT_MODEL = "openrouter/free"
     
     #CHAT_MODEL = "liquid/lfm-2.5-1.2b-thinking:free"
 
