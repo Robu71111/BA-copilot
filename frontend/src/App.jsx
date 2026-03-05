@@ -6,7 +6,7 @@ import RequirementsSection from './components/RequirementsSection';
 import StoriesSection from './components/StoriesSection';
 import CriteriaSection from './components/CriteriaSection';
 import { healthApi, projectApi } from './services/api';
-import { Activity, AlertTriangle, Layers, FileText, Users, FlaskConical, Menu, X } from 'lucide-react';
+import { Activity, Layers, FileText, Users, FlaskConical, Menu, X } from 'lucide-react';
 
 function App() {
   const [projects, setProjects] = useState([]);
@@ -19,7 +19,6 @@ function App() {
 
   useEffect(() => { checkHealth(); loadProjects(); }, []);
 
-  // Close sidebar on resize to desktop
   useEffect(() => {
     const fn = () => { if (window.innerWidth > 900) setSidebarOpen(false); };
     window.addEventListener('resize', fn);
@@ -71,7 +70,6 @@ function App() {
 
   return (
     <div className="app">
-      {/* Mobile overlay */}
       <div className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`} onClick={() => setSidebarOpen(false)} />
 
       <Sidebar
