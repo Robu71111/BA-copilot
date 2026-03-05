@@ -1,20 +1,8 @@
-# FastAPI & Server
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 python-dotenv==1.0.0
-
-# HTTP Requests (for OpenRouter API)
 requests==2.31.0
-
-# Document Processing
 python-docx==1.1.0
 PyPDF2==3.0.1
-# Use pandas binary wheel instead of building from source
-pandas>=2.1.1
-
-# Utilities
 pydantic==2.5.0
-
-# For Vercel/Serverless deployment
-mangum==0.17.0
