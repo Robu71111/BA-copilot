@@ -5,7 +5,7 @@ import { BookOpen, Table, Download, CheckCircle, AlertTriangle, Flag, Hash, GitB
 const priorityClass = (p) => {
   if (!p) return 'tag-low';
   const l = p.toLowerCase();
-  if (l === 'high')   return 'tag-high';
+  if (l === 'high') return 'tag-high';
   if (l === 'medium') return 'tag-medium';
   return 'tag-low';
 };
@@ -47,86 +47,83 @@ const StoriesSection = ({ requirements, projectType = 'General', onComplete }) =
 
   return (
     <div className={`section ${stories ? 's-done' : 's-active'}`}>
-      <div className="section-head">
-        <div className={`step-icon ${stories ? 'si-green' : 'si-purple'}`}>
-          {stories ? <CheckCircle size={17} /> : <BookOpen size={17} />}
-        </div>
-        <div className="section-meta">
-          <div className="section-title">
-            Agile Story Mapping <span className="step-chip">STEP 3</span>
+      <div className="section-accent" />
+      <div className="section-inner">
+        <div className="section-head">
+          <div className={`step-icon ${stories ? 'si-green' : 'si-purple'}`}>
+            {stories ? <CheckCircle size={16} /> : <BookOpen size={16} />}
           </div>
-          <div className="section-sub">
-            {stories
-              ? `${stories.total_count} user stories in Scrum format`
-              : 'Generate Scrum user stories from your requirements'}
-          </div>
-        </div>
-      </div>
-
-      {error && (
-        <div className="error-box">
-          <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
-          <span>{error}</span>
-        </div>
-      )}
-
-      {!stories ? (
-        <>
-          <button className="btn btn-primary" onClick={handleGenerate} disabled={loading}>
-            <BookOpen size={14} />
-            {loading ? 'Generating Stories…' : 'Generate User Stories'}
-          </button>
-          {loading && (
-            <>
-              <div className="loading-bar"><div className="loading-bar-track" /></div>
-              <p className="loading-hint">Mapping user journeys — may take 30–60 s ☕</p>
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <div className="action-bar" style={{ marginBottom: 18 }}>
-            <span className="stat-chip chip-func"><CheckCircle size={11} /> {stories.total_count} Stories</span>
-            <div className="action-right">
-              <button className="btn btn-secondary btn-sm" onClick={downloadJira}>
-                <Table size={12} /> JIRA CSV
-              </button>
-              <button className="btn btn-secondary btn-sm" onClick={downloadMd}>
-                <Download size={12} /> Markdown
-              </button>
+          <div className="section-meta">
+            <div className="section-title">
+              Agile Story Mapping <span className="step-chip">STEP 03</span>
+            </div>
+            <div className="section-sub">
+              {stories
+                ? `${stories.total_count} user stories generated in Scrum format`
+                : 'Generate Scrum user stories with priorities and story points'}
             </div>
           </div>
+        </div>
 
-          {stories.stories.map((s, i) => (
-            <div key={i} className="story-card">
-              <div className="story-header">
-                <span className="story-code">{s.story_code}</span>
-                <span className="story-title-text">{s.title}</span>
+        {error && (
+          <div className="error-box">
+            <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {!stories ? (
+          <>
+            <button className="btn btn-primary" onClick={handleGenerate} disabled={loading}>
+              <BookOpen size={13} />
+              {loading ? 'Generating Stories…' : 'Generate User Stories →'}
+            </button>
+            {loading && (
+              <>
+                <div className="loading-bar"><div className="loading-bar-track" /></div>
+                <p className="loading-hint">// mapping user journeys — may take 30–60s ☕</p>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="action-bar" style={{ marginBottom: 18 }}>
+              <span className="stat-chip chip-func"><CheckCircle size={10} /> {stories.total_count} stories</span>
+              <div className="action-right">
+                <button className="btn btn-secondary btn-sm" onClick={downloadJira}>
+                  <Table size={11} /> JIRA CSV
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={downloadMd}>
+                  <Download size={11} /> Markdown
+                </button>
               </div>
-              <div className="story-body">{s.user_story}</div>
-              <div className="story-tags">
-                <span className={`tag ${priorityClass(s.priority)}`}>
-                  <Flag size={10} /> {s.priority}
-                </span>
-                <span className="tag tag-pts">
-                  <Hash size={10} /> {s.story_points} pts
-                </span>
-                {s.dependencies && s.dependencies !== 'None' && (
-                  <span className="tag tag-dep">
-                    <GitBranch size={10} /> {s.dependencies}
-                  </span>
+            </div>
+
+            {stories.stories.map((s, i) => (
+              <div key={i} className="story-card">
+                <div className="story-header">
+                  <span className="story-code">{s.story_code}</span>
+                  <span className="story-title-text">{s.title}</span>
+                </div>
+                <div className="story-body">{s.user_story}</div>
+                <div className="story-tags">
+                  <span className={`tag ${priorityClass(s.priority)}`}><Flag size={9} /> {s.priority}</span>
+                  <span className="tag tag-pts"><Hash size={9} /> {s.story_points} pts</span>
+                  {s.dependencies && s.dependencies !== 'None' && (
+                    <span className="tag tag-dep"><GitBranch size={9} /> {s.dependencies}</span>
+                  )}
+                </div>
+                {s.notes && s.notes !== 'None' && (
+                  <div className="story-notes">
+                    <StickyNote size={10} style={{ display: 'inline', marginRight: 4 }} />
+                    {s.notes}
+                  </div>
                 )}
               </div>
-              {s.notes && s.notes !== 'None' && (
-                <div className="story-notes">
-                  <StickyNote size={11} style={{ display: 'inline', marginRight: 4 }} />
-                  {s.notes}
-                </div>
-              )}
-            </div>
-          ))}
-        </>
-      )}
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 };
