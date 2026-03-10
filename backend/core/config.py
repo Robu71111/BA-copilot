@@ -18,6 +18,7 @@ class APIConfig:
     # Broad fallback list — tried in sequence until one succeeds
     # openrouter/auto is first; if it also rate-limits we try individual models
     FREE_MODELS = [
+        "openrouter/free",  # OpenRouter's free tier, auto-chooses best available model
         "openrouter/auto",
         "meta-llama/llama-3.3-70b-instruct:free",
         "deepseek/deepseek-chat-v3-0324:free",
