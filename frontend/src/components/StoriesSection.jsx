@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { storiesApi } from '../services/api';
-import { Flag, Hash, GitBranch, Table, Download } from 'lucide-react';
+import { Flag, Hash, Table, Download } from 'lucide-react';
 
 export default function StoriesSection({ requirements, projectType, onComplete }) {
   const [loading, setLoading] = useState(false);

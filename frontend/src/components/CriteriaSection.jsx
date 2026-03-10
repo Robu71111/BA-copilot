@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { criteriaApi } from '../services/api';
-import { FlaskConical, CheckCircle } from 'lucide-react';
 
 export default function CriteriaSection({ userStories }) {
   const [loading, setLoading] = useState(false);

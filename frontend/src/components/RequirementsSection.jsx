@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { requirementsApi } from '../services/api';
-import { ListChecks, Settings2, Download, CheckCircle, RefreshCw } from 'lucide-react';
+import { ListChecks, Settings2, Download, CheckCircle } from 'lucide-react';
 
 export default function RequirementsSection({ inputId, projectType='General', industry='General', onComplete }) {
   const [loading, setLoading] = useState(false);

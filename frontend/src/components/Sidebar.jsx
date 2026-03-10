@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderPlus, Trash2, Briefcase, Home, Layers, BookOpen, ChevronRight } from 'lucide-react';
+import { FolderPlus, Trash2, Briefcase, Home, Layers } from 'lucide-react';
 
 export default function Sidebar({ projects=[], selected, onSelect, onCreate, onDelete, isOpen, currentPage, onNav }) {
   const [showForm, setShowForm] = useState(false);
@@ -48,17 +48,18 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
             <FolderPlus size={14} /> New Project
           </button>
         ) : (
-          <form onSubmit={submit} className="create-form">
+          <form onSubmit={submit} className="create-form" style={{ padding: '0 14px' }}>
             <input 
               className="cf-input" 
               placeholder="Project Name" 
+              style={{ width: '100%', padding: '8px', background: 'var(--s2)', border: '1px solid var(--b2)', borderRadius: '4px', color: 'white', marginBottom: '8px' }}
               value={form.name} 
               onChange={e => setForm({...form, name: e.target.value})}
               autoFocus
             />
-            <div className="cf-row">
-              <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Add</button>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: '4px' }}>Add</button>
+              <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: '4px' }} onClick={() => setShowForm(false)}>Cancel</button>
             </div>
           </form>
         )}
@@ -66,10 +67,10 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
 
       <div className="sb-footer" style={{ padding: '20px', borderTop: '1px solid var(--b1)' }}>
         <div className="sb-user" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <div className="sb-avatar">VS</div>
+          <div className="sb-avatar" style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--p1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>VS</div>
           <div>
-            <div className="sb-user-name">Vishva Shukla</div>
-            <div className="sb-user-role">Enterprise Admin</div>
+            <div style={{ fontSize: '12px', fontWeight: 'bold' }}>Vishva Shukla</div>
+            <div style={{ fontSize: '10px', color: 'var(--t3)' }}>Enterprise Admin</div>
           </div>
         </div>
       </div>

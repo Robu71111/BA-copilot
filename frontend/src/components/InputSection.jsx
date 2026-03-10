@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Mic, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Mic, AlertCircle } from 'lucide-react';
 import { inputApi } from '../services/api';
 import AudioRecorder from './AudioRecorder';
 
@@ -74,7 +74,7 @@ export default function InputSection({ projectId, onComplete }) {
 
         {tab === 'file' && (
           <div style={{ padding: '40px', border: '2px dashed var(--b2)', borderRadius: '12px', textAlign: 'center' }}>
-            <Upload size={32} color={'var(--t3)'} style={{ marginBottom: '12px' }} />
+            <Upload size={32} color="var(--t3)" style={{ marginBottom: '12px' }} />
             <p style={{ fontSize: '13px', color: 'var(--t2)', marginBottom: '16px' }}>PDF, DOCX, or TXT</p>
             <input type="file" id="file-up" style={{ display: 'none' }} onChange={handleFileUpload} />
             <label htmlFor="file-up" className="btn btn-secondary">Choose File</label>
