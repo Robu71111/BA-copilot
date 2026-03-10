@@ -206,7 +206,7 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
             fontSize:13, color:'rgba(180,180,215,0.9)',
             fontFamily:'Geist Mono,monospace', marginTop:6,
           }}>
-            {elapsed}s elapsed · this can take up to 120s for large inputs
+            {elapsed}s elapsed. this can take upto 120s for large inputs
           </div>
         </div>
 
@@ -325,7 +325,7 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
           fontSize:14, color:'rgba(160,160,200,0.9)',
           fontFamily:'Geist Mono,monospace',
         }}>
-          ⚡Powered by AI models
+          ⚡Powered by Artificial Intelligence
         </div>
       </div>
     </div>

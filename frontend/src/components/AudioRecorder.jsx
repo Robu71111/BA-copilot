@@ -81,7 +81,6 @@ const AudioRecorder = ({ onTranscriptComplete }) => {
             <li>Allow microphone access when prompted</li>
             <li>Speak clearly about your project requirements</li>
             <li>Click <strong>Stop Recording</strong> when done</li>
-            <li>Transcript saves automatically — no API cost</li>
           </ol>
         </div>
       )}
