@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, FileText, Mic, CheckCircle, Pencil, AlertTriangle } from 'lucide-react';
 import { inputApi } from '../services/api';
+import LoadingOverlay from './LoadingOverlay';
 import AudioRecorder from './AudioRecorder';
 
 export default function InputSection({ projectId, onComplete }) {
@@ -56,7 +57,9 @@ export default function InputSection({ projectId, onComplete }) {
   );
 
   return (
-    <div className="card c-active">
+    <>
+      <LoadingOverlay type="input" visible={loading} />
+      <div className="card c-active">
       <div className="card-stripe"/>
       <div className="card-body">
         <div className="card-head">
@@ -103,12 +106,12 @@ export default function InputSection({ projectId, onComplete }) {
               <div style={{display:'flex', alignItems:'center', gap:12}}>
                 <span className="char-count">{charCount} chars</span>
                 {!isReady && (
-                  <span style={{fontSize:12,color:'var(--t3)',fontFamily:'Geist Mono,monospace'}}>
+                  <span style={{fontSize:14,color:'var(--t2)',fontFamily:'Geist Mono,monospace'}}>
                     · {50 - charCount} more needed
                   </span>
                 )}
                 {isReady && (
-                  <span style={{fontSize:12,color:'var(--green)',fontFamily:'Geist Mono,monospace',display:'flex',alignItems:'center',gap:4}}>
+                  <span style={{fontSize:14,color:'var(--green)',fontFamily:'Geist Mono,monospace',display:'flex',alignItems:'center',gap:4}}>
                     <CheckCircle size={11}/> Ready to analyse
                   </span>
                 )}
@@ -156,8 +159,8 @@ export default function InputSection({ projectId, onComplete }) {
             <div className="notice ok" style={{marginBottom:16}}>
               <div className="n-dot"/>
               <div>
-                <p style={{marginBottom:2}}>100% Free — Browser Speech API</p>
-                <p style={{fontSize:12,color:'var(--t3)'}}>No uploads, no servers, your audio never leaves your machine</p>
+                <p style={{marginBottom:2}}>100% Free — Browser Web Speech API</p>
+                <small>No API costs. Runs client-side in Chrome, Edge and Safari.</small>
               </div>
             </div>
             <AudioRecorder onTranscriptComplete={fromVoice}/>
@@ -165,5 +168,6 @@ export default function InputSection({ projectId, onComplete }) {
         )}
       </div>
     </div>
+    </>
   );
 }

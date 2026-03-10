@@ -36,7 +36,7 @@ MANDATORY RULES — violating any rule makes your output wrong:
 1. NEVER put the same idea in both sections. Every requirement appears EXACTLY ONCE.
 2. The FR items must be DIFFERENT from all NFR items — do not reuse the same sentence.
 3. NFR items must ONLY describe quality attributes (speed, scale, security, uptime, compliance). If it describes an action or feature, it is FR not NFR.
-4. Generate 6-12 functional requirements and 3-6 non-functional requirements.
+4. Generate functional requirements and non-functional requirements based on the input text and details, dont overadd things to make it look longer or reduce things to make it look shorter.
 5. Output ONLY the two sections above. No intro, no summary, no commentary.
 6. Each requirement must be a complete sentence starting with "The system shall..."
 

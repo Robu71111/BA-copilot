@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { criteriaApi } from '../services/api';
 import { FlaskConical, CheckCircle, AlertTriangle, ChevronDown } from 'lucide-react';
+import LoadingOverlay from './LoadingOverlay';
 
 export default function CriteriaSection({ userStories }) {
   const [selectedIdx, setSelectedIdx] = useState('');
@@ -29,7 +30,9 @@ export default function CriteriaSection({ userStories }) {
   const selectedStory = selectedIdx !== '' ? stories[parseInt(selectedIdx, 10)] : null;
 
   return (
-    <div className={`card ${criteria ? 'c-done' : 'c-active'}`}>
+    <>
+      <LoadingOverlay type="criteria" visible={loading} />
+      <div className={`card ${criteria ? 'c-done' : 'c-active'}`}>
       <div className="card-stripe"/>
       <div className="card-body">
 
@@ -42,7 +45,7 @@ export default function CriteriaSection({ userStories }) {
             <div className="card-title">
               Acceptance Criteria
               <span style={{
-                fontFamily:'Geist Mono,monospace', fontSize:10, fontWeight:700,
+                fontFamily:'Geist Mono,monospace', fontSize:14, fontWeight:700,
                 color:'#a78bfa', background:'rgba(167,139,250,0.1)',
                 padding:'2px 8px', borderRadius:4, border:'1px solid rgba(167,139,250,0.2)'
               }}>Gherkin BDD</span>
@@ -65,8 +68,8 @@ export default function CriteriaSection({ userStories }) {
         {/* Story selector */}
         <div style={{marginBottom:16}}>
           <label style={{
-            display:'block', fontSize:12, fontWeight:600,
-            color:'var(--t3)', fontFamily:'Geist Mono,monospace',
+            display:'block', fontSize:14, fontWeight:600,
+            color:'var(--t2)', fontFamily:'Geist Mono,monospace',
             textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8
           }}>
             Select a User Story
@@ -87,7 +90,7 @@ export default function CriteriaSection({ userStories }) {
             </select>
             <ChevronDown size={14} style={{
               position:'absolute', right:14, top:'50%',
-              transform:'translateY(-50%)', color:'var(--t3)', pointerEvents:'none'
+              transform:'translateY(-50%)', color:'var(--t2)', pointerEvents:'none'
             }}/>
           </div>
         </div>
@@ -99,7 +102,7 @@ export default function CriteriaSection({ userStories }) {
             borderRadius:12, padding:'14px 18px', marginBottom:16,
             borderLeft:'3px solid rgba(167,139,250,0.5)'
           }}>
-            <div style={{fontSize:12, fontWeight:700, color:'#a78bfa', fontFamily:'Geist Mono,monospace', marginBottom:6}}>
+            <div style={{fontSize:14, fontWeight:700, color:'#a78bfa', fontFamily:'Geist Mono,monospace', marginBottom:6}}>
               SELECTED STORY
             </div>
             <div style={{fontSize:14, color:'var(--t1)', fontStyle:'italic', lineHeight:1.65}}>
@@ -133,7 +136,7 @@ export default function CriteriaSection({ userStories }) {
               <FlaskConical size={12} color="#a78bfa"/>
               <span>{criteria.criteria.length} scenario{criteria.criteria.length !== 1 ? 's' : ''} generated</span>
               <span style={{
-                marginLeft:'auto', fontSize:11, fontWeight:600,
+                marginLeft:'auto', fontSize:13, fontWeight:600,
                 color:'var(--green)', fontFamily:'Geist Mono,monospace',
                 background:'var(--green-bg)', border:'1px solid rgba(34,197,94,0.18)',
                 padding:'2px 8px', borderRadius:4
@@ -145,7 +148,7 @@ export default function CriteriaSection({ userStories }) {
               <div key={i} className="gherkin-card" style={{marginBottom:12}}>
                 <div className="g-scenario">
                   <span style={{
-                    fontSize:10, fontFamily:'Geist Mono,monospace', fontWeight:700,
+                    fontSize:14, fontFamily:'Geist Mono,monospace', fontWeight:700,
                     color:'#a78bfa', marginRight:10, opacity:0.7
                   }}>
                     SCENARIO {i+1}
@@ -172,7 +175,7 @@ export default function CriteriaSection({ userStories }) {
                 )}
                 {c.and_steps?.map((step, j) => (
                   <div key={j} className="g-row">
-                    <span className="g-kw" style={{color:'var(--t3)'}}>And</span>
+                    <span className="g-kw" style={{color:'var(--t2)'}}>And</span>
                     <span className="g-text">{step}</span>
                   </div>
                 ))}
@@ -182,5 +185,6 @@ export default function CriteriaSection({ userStories }) {
         )}
       </div>
     </div>
+    </>
   );
 }

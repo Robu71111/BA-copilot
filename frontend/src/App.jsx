@@ -259,7 +259,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
                           <span style={{
                             width:28,height:28,borderRadius:8,background:'var(--s3)',
                             border:'1px solid var(--b1)',display:'flex',alignItems:'center',
-                            justifyContent:'center',fontSize:11,fontWeight:700,
+                            justifyContent:'center',fontSize:13,fontWeight:700,
                             color:'var(--p3)',flexShrink:0,fontFamily:'Geist Mono,monospace'
                           }}>
                             {name.charAt(0).toUpperCase()}
@@ -273,7 +273,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
                         title="Delete project"
                         style={{
                           padding:'14px 16px',background:'transparent',border:'none',
-                          borderLeft:'1px solid var(--b1)',color:'var(--t4)',
+                          borderLeft:'1px solid var(--b1)',color:'var(--t2)',
                           cursor:'pointer',display:'flex',alignItems:'center',
                           transition:'all 0.14s',flexShrink:0
                         }}
@@ -349,7 +349,7 @@ function ServicesPage({ onTryIt }) {
     <div className="services-page">
       <div className="svc-inner">
         <div className="svc-header">
-          <div className="svc-eyebrow"><Zap size={10} />Platform Services</div>
+          <div className="svc-eyebrow"><Zap size={12} />Platform Services</div>
           <h1 className="svc-h1">Everything you need<br />to <em>ship faster</em></h1>
           <p className="svc-sub">
             A full business analysis platform powered by the best free AI models.
@@ -364,7 +364,7 @@ function ServicesPage({ onTryIt }) {
             <div key={title} className={`svc-card ${featured ? 'featured' : ''} ${tag === 'coming' ? 'coming' : ''}`}>
               {featured && <div className="svc-card-glow" />}
               <div className="svc-card-icon" style={{ background: iconBg, borderColor: 'var(--b1)' }}>
-                <Icon size={17} color={iconColor} />
+                <Icon size={22} color={iconColor} />
               </div>
               <div className={`svc-tag ${tag}`}>{tagLabel}</div>
               <div className="svc-card-title">{title}</div>
