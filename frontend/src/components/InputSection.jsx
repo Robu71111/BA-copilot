@@ -156,8 +156,8 @@ export default function InputSection({ projectId, onComplete }) {
             <div className="notice ok" style={{marginBottom:16}}>
               <div className="n-dot"/>
               <div>
-                <p style={{marginBottom:2}}>100% Free — Browser Web Speech API</p>
-                <small>No API costs. Runs client-side in Chrome, Edge and Safari.</small>
+                <p style={{marginBottom:2}}>100% Free — Browser Speech API</p>
+                <p style={{fontSize:12,color:'var(--t3)'}}>No uploads, no servers, your audio never leaves your machine</p>
               </div>
             </div>
             <AudioRecorder onTranscriptComplete={fromVoice}/>

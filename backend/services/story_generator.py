@@ -29,7 +29,7 @@ class UserStoryGenerator:
                 response = self._call_model(model, prompt)
                 body = response.text
 
-                if response.status_code == 429:
+                if response.status_code in (429, 404, 503):
                     print(f"HTTP 429 on {model}"); time.sleep(1); continue
 
                 if APIConfig.is_rate_limit_error(body):

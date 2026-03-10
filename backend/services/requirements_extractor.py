@@ -40,7 +40,7 @@ class RequirementsExtractor:
                 body = response.text
 
                 # Handle HTTP-level rate limit
-                if response.status_code == 429:
+                if response.status_code in (429, 404, 503):
                     print(f"HTTP 429 on {model}, trying next...")
                     time.sleep(1)
                     continue

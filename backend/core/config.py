@@ -19,7 +19,6 @@ class APIConfig:
     # openrouter/auto is first; if it also rate-limits we try individual models
     FREE_MODELS = [
         "openrouter/auto",
-        "openrouter/free",
         "meta-llama/llama-3.3-70b-instruct:free",
         "deepseek/deepseek-chat-v3-0324:free",
         "google/gemma-3-27b-it:free",
@@ -27,7 +26,6 @@ class APIConfig:
         "mistralai/mistral-7b-instruct:free",
         "qwen/qwen3-8b:free",
         "qwen/qwen3-14b:free",
-        "microsoft/mai-ds-r1:free",
         "nousresearch/deephermes-3-llama-3-8b:free",
         "tngtech/deepseek-r1t-chimera:free",
     ]
@@ -42,6 +40,7 @@ class APIConfig:
         "too many requests", "context limit exceeded",
         "provider error", "no endpoints",
         "overloaded", "capacity",
+        "no endpoints found", "not found", "unavailable",
     ]
 
     @staticmethod
