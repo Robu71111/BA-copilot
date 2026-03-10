@@ -127,7 +127,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
+            <div className="footer-legal">2026 BA Copilot. All rights reserved</div>
           </div>
         </footer>
       </div>
@@ -163,7 +163,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
+            <span className="s-dot" />{healthy ? 'system-online' : 'system-offline'}
           </div>
         </div>
       </nav>
@@ -210,7 +210,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
           ) : (
             <form className="wl-form" onSubmit={submit}>
               <div className="wl-form-title">New Project</div>
-              <input className="cf-input" placeholder="Project name (e.g. plentycart)" value={form.name}
+              <input className="cf-input" placeholder="Project name (e.g. Fintech App)" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
               <select className="f-select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                 <option>Web Application</option>
