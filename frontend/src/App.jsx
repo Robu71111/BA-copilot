@@ -6,7 +6,7 @@ import RequirementsSection from './components/RequirementsSection';
 import StoriesSection from './components/StoriesSection';
 import CriteriaSection from './components/CriteriaSection';
 import { healthApi, projectApi } from './services/api';
-import { Activity, Layers, FileText, Users, FlaskConical, Menu, X } from 'lucide-react';
+import { Layers, FileText, Users, FlaskConical, Menu, X } from 'lucide-react';
 
 function App() {
   const [projects, setProjects] = useState([]);

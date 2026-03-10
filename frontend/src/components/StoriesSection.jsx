@@ -76,12 +76,12 @@ const StoriesSection = ({ requirements, projectType = 'General', onComplete }) =
           <>
             <button className="btn btn-primary" onClick={handleGenerate} disabled={loading}>
               <BookOpen size={13} />
-              {loading ? 'Generating Stories…' : 'Generate User Stories →'}
+              {loading ? 'Generating Stories...' : 'Generate User Stories →'}
             </button>
             {loading && (
               <>
                 <div className="loading-bar"><div className="loading-bar-track" /></div>
-                <p className="loading-hint">// mapping user journeys — may take 30–60s ☕</p>
+                <p className="loading-hint">mapping user journeys — may take 30-60s</p>
               </>
             )}
           </>
@@ -98,7 +98,6 @@ const StoriesSection = ({ requirements, projectType = 'General', onComplete }) =
                 </button>
               </div>
             </div>
-
             {stories.stories.map((s, i) => (
               <div key={i} className="story-card">
                 <div className="story-header">

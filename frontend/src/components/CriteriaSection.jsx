@@ -53,7 +53,7 @@ const CriteriaSection = ({ userStories }) => {
           value={selectedIdx}
           onChange={e => { setSelectedIdx(e.target.value); setCriteria(null); setError(null); }}
         >
-          <option value="">// select a user story...</option>
+          <option value="">Select a user story...</option>
           {userStories.stories.map((s, i) => (
             <option key={i} value={i}>{s.story_code}: {s.title}</option>
           ))}
@@ -61,13 +61,13 @@ const CriteriaSection = ({ userStories }) => {
 
         <button className="btn btn-primary" onClick={handleGenerate} disabled={loading || selectedIdx === ''}>
           <FlaskConical size={13} />
-          {loading ? 'Generating Scenarios…' : 'Generate Acceptance Criteria →'}
+          {loading ? 'Generating Scenarios...' : 'Generate Acceptance Criteria →'}
         </button>
 
         {loading && (
           <>
             <div className="loading-bar"><div className="loading-bar-track" /></div>
-            <p className="loading-hint">// writing BDD acceptance scenarios...</p>
+            <p className="loading-hint">writing BDD acceptance scenarios...</p>
           </>
         )}
 

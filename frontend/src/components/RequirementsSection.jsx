@@ -43,7 +43,7 @@ const RequirementsSection = ({ inputId, projectType = 'General', industry = 'Gen
             </div>
             <div className="section-sub">
               {reqs
-                ? `${reqs.total_count} requirements extracted — ${reqs.functional.length} functional, ${reqs.non_functional.length} non-functional`
+                ? `${reqs.total_count} requirements — ${reqs.functional.length} functional, ${reqs.non_functional.length} non-functional`
                 : 'AI extracts functional & non-functional requirements from your source'}
             </div>
           </div>
@@ -60,12 +60,12 @@ const RequirementsSection = ({ inputId, projectType = 'General', industry = 'Gen
           <>
             <button className="btn btn-primary" onClick={handleExtract} disabled={loading}>
               <ScanText size={13} />
-              {loading ? 'Analysing…' : 'Extract Requirements →'}
+              {loading ? 'Analysing...' : 'Extract Requirements →'}
             </button>
             {loading && (
               <>
                 <div className="loading-bar"><div className="loading-bar-track" /></div>
-                <p className="loading-hint">// running AI extraction — may take 30–60s ☕</p>
+                <p className="loading-hint">running AI extraction — may take 30-60s</p>
               </>
             )}
           </>
@@ -79,7 +79,6 @@ const RequirementsSection = ({ inputId, projectType = 'General', industry = 'Gen
                 <Download size={11} /> Export .md
               </button>
             </div>
-
             {reqs.functional.length > 0 && (
               <>
                 <div className="req-group"><ListChecks size={12} color="#818cf8" /> Functional Requirements</div>

@@ -96,7 +96,7 @@ const InputSection = ({ projectId, onComplete }) => {
           <div className="fade-in">
             <textarea
               className="form-textarea"
-              placeholder={"// paste transcript, meeting notes, or requirements...\n\n// example: We need a mobile app for users to\n// track daily water intake, set goals,\n// get reminders and view weekly progress."}
+              placeholder="Paste transcript, meeting notes, or requirements here..."
               rows={9}
               value={text}
               onChange={e => { setText(e.target.value); setError(null); }}
@@ -104,10 +104,15 @@ const InputSection = ({ projectId, onComplete }) => {
             <div className="action-bar">
               <span className="char-count">{text.length} chars {text.length < 50 ? `· need ${50 - text.length} more` : '· ready'}</span>
               <button className="btn btn-primary" onClick={handleSubmit} disabled={loading || text.trim().length < 50}>
-                {loading ? 'Processing…' : 'Analyse Input →'}
+                {loading ? 'Processing...' : 'Analyse Input →'}
               </button>
             </div>
-            {loading && <><div className="loading-bar"><div className="loading-bar-track" /></div><p className="loading-hint">// saving input...</p></>}
+            {loading && (
+              <>
+                <div className="loading-bar"><div className="loading-bar-track" /></div>
+                <p className="loading-hint">saving input...</p>
+              </>
+            )}
           </div>
         )}
 
@@ -116,13 +121,18 @@ const InputSection = ({ projectId, onComplete }) => {
             <label htmlFor="file-upload" className="dropzone">
               <div className="dropzone-icon"><Upload size={19} /></div>
               <div className="dropzone-title">Drop document or click to browse</div>
-              <div className="dropzone-hint">// .txt · .docx · .pdf</div>
+              <div className="dropzone-hint">.txt · .docx · .pdf</div>
               <span className="btn btn-secondary btn-sm" style={{ display: 'inline-flex' }}>
-                {loading ? 'Uploading…' : 'Choose File'}
+                {loading ? 'Uploading...' : 'Choose File'}
               </span>
             </label>
             <input type="file" accept=".txt,.docx,.pdf" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
-            {loading && <><div className="loading-bar"><div className="loading-bar-track" /></div><p className="loading-hint">// parsing document...</p></>}
+            {loading && (
+              <>
+                <div className="loading-bar"><div className="loading-bar-track" /></div>
+                <p className="loading-hint">parsing document...</p>
+              </>
+            )}
           </div>
         )}
 
