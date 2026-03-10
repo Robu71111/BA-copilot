@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderPlus, Trash2, Briefcase, Zap, Home, Layers, BookOpen } from 'lucide-react';
+import { FolderPlus, Trash2, Briefcase, Home, Layers, BookOpen } from 'lucide-react';
 
 export default function Sidebar({ projects=[], selected, onSelect, onCreate, onDelete, isOpen, currentPage, onNav }) {
   const [showForm, setShowForm] = useState(false);
