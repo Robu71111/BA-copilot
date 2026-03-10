@@ -20,29 +20,34 @@ PROJECT CONTEXT:
 - Type: {project_type}
 - Industry: {industry}
 
+DEFINITIONS:
+- FUNCTIONAL requirements: WHAT the system must DO — features, behaviours, user actions, data operations.
+  Examples: "The system shall allow users to log in", "The system shall process payments via Stripe".
+- NON-FUNCTIONAL requirements: HOW the system must PERFORM — performance, security, scalability, reliability, compliance, usability, availability.
+  Examples: "The system shall respond within 200ms", "The system shall support 10,000 concurrent users", "The system shall be available 99.9% uptime".
+
 STRICT OUTPUT FORMAT (FOLLOW EXACTLY):
 
 ## Functional Requirements
 
-- FR-001: [Complete requirement description]
-- FR-002: [Complete requirement description]
-- FR-003: [Complete requirement description]
+- FR-001: [Complete functional requirement description]
+- FR-002: [Complete functional requirement description]
 [Continue numbering...]
 
 ## Non-Functional Requirements
 
-- NFR-001: [Complete requirement description]
-- NFR-002: [Complete requirement description]
-- NFR-003: [Complete requirement description]
+- NFR-001: [Complete non-functional requirement description]
+- NFR-002: [Complete non-functional requirement description]
 [Continue numbering...]
 
-RULES:
-1. Start with "## Functional Requirements"
-2. Use exact format: "- FR-XXX: description"
-3. Then "## Non-Functional Requirements"
-4. Use exact format: "- NFR-XXX: description"
-5. NO intro text, NO outro text
-6. Extract at least 5-10 functional and 3-5 non-functional requirements
+CRITICAL RULES — FOLLOW EVERY ONE:
+1. NEVER repeat or duplicate the same requirement in both sections. Each requirement appears ONCE only.
+2. A requirement is either functional OR non-functional — it cannot be both. Choose the correct section.
+3. Non-functional requirements must describe quality attributes (speed, scale, security, reliability), NOT features.
+4. Start with "## Functional Requirements", use format "- FR-XXX: description"
+5. Then "## Non-Functional Requirements", use format "- NFR-XXX: description"
+6. NO intro text, NO outro text, NO commentary
+7. Extract 5-15 functional and 3-8 non-functional requirements
 
 INPUT TEXT TO ANALYZE:
 {raw_text}

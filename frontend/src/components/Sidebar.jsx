@@ -13,21 +13,11 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
     setShowForm(false);
   };
 
+  // Only show on mobile (CSS hides on desktop)
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-      {/* Logo */}
-      <div className="sb-logo">
-        <div className="logo-gem">
-          <Zap size={14} color="#fff" fill="#fff" />
-        </div>
-        <div className="logo-wordmark">
-          <div className="logo-top">BA <em>Copilot</em></div>
-          <div className="logo-tag">Analysis Platform</div>
-        </div>
-      </div>
-
       <div className="sb-nav">
-        {/* Main navigation */}
+        {/* Mobile nav links */}
         <div className="sb-section-label">Platform</div>
         <div className={`nav-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => onNav('home')}>
           <div className="nav-icon"><Home size={12} /></div>
@@ -37,7 +27,7 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
           <div className="nav-icon"><Layers size={12} /></div>
           <span className="nav-label-text">Services</span>
         </div>
-        <div className={`nav-item ${currentPage === 'workspace' ? 'active' : ''}`} onClick={() => { if (selected) onNav('workspace'); }}>
+        <div className={`nav-item ${currentPage === 'workspace' ? 'active' : ''}`} onClick={() => onNav('workspace')}>
           <div className="nav-icon"><BookOpen size={12} /></div>
           <span className="nav-label-text">Workspace</span>
         </div>
@@ -83,7 +73,6 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
         )}
       </div>
 
-      {/* Footer */}
       <div className="sb-footer">
         <div className="sb-user">
           <div className="sb-avatar">BA</div>
