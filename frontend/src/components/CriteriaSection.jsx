@@ -2,96 +2,68 @@ import React, { useState } from 'react';
 import { criteriaApi } from '../services/api';
 import { FlaskConical, CheckCircle, AlertTriangle } from 'lucide-react';
 
-const CriteriaSection = ({ userStories }) => {
-  const [selectedIdx, setSelectedIdx] = useState('');
+export default function CriteriaSection({ userStories }) {
+  const [idx, setIdx] = useState('');
   const [loading, setLoading] = useState(false);
   const [criteria, setCriteria] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleGenerate = async () => {
-    const idx = parseInt(selectedIdx, 10);
-    const story = userStories.stories[idx];
+  const generate = async () => {
+    const i = parseInt(idx, 10);
+    const story = userStories.stories[i];
     if (!story) return;
     setLoading(true); setCriteria(null); setError(null);
     try {
-      const id = story.story_id || story.id || story._id || 0;
+      const id = story.story_id||story.id||story._id||0;
       const data = await criteriaApi.generate(id, story.user_story);
       setCriteria(data);
-    } catch (e) { setError(e.message); }
+    } catch(e) { setError(e.message); }
     finally { setLoading(false); }
   };
 
   return (
-    <div className="section s-active">
-      <div className="section-accent" />
-      <div className="section-inner">
-        <div className="section-head">
-          <div className={`step-icon ${criteria ? 'si-green' : 'si-amber'}`}>
-            {criteria ? <CheckCircle size={16} /> : <FlaskConical size={16} />}
+    <div className="card c-active">
+      <div className="card-stripe"/>
+      <div className="card-body">
+        <div className="card-head">
+          <div className={`step-badge ${criteria?'sb-green':'sb-amber'}`}>
+            {criteria?<CheckCircle size={15}/>:<FlaskConical size={15}/>}
           </div>
-          <div className="section-meta">
-            <div className="section-title">
+          <div className="card-meta">
+            <div className="card-title">
               Acceptance Criteria
-              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, fontWeight: 600, color: 'var(--purple)', background: 'rgba(167,139,250,0.1)', padding: '1px 6px', borderRadius: 3, border: '1px solid rgba(167,139,250,0.2)' }}>
-                Gherkin
-              </span>
-              <span className="step-chip">STEP 04</span>
+              <span style={{fontFamily:'Geist Mono,monospace',fontSize:9.5,fontWeight:700,color:'var(--purple)',background:'rgba(167,139,250,0.09)',padding:'2px 6px',borderRadius:3,border:'1px solid rgba(167,139,250,0.16)'}}>Gherkin BDD</span>
+              <span className="step-tag">STEP 04</span>
             </div>
-            <div className="section-sub">Generate Given / When / Then BDD scenarios for any story</div>
+            <div className="card-sub">Generate Given / When / Then scenarios for any user story</div>
           </div>
         </div>
 
-        {error && (
-          <div className="error-box">
-            <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span>{error}</span>
-          </div>
-        )}
+        {error && <div className="notice error"><AlertTriangle size={13} style={{flexShrink:0,marginTop:1}}/><span style={{fontSize:12}}>{error}</span></div>}
 
-        <select
-          className="form-select"
-          value={selectedIdx}
-          onChange={e => { setSelectedIdx(e.target.value); setCriteria(null); setError(null); }}
-        >
+        <select className="f-select" value={idx} onChange={e=>{setIdx(e.target.value);setCriteria(null);setError(null);}}>
           <option value="">Select a user story...</option>
-          {userStories.stories.map((s, i) => (
-            <option key={i} value={i}>{s.story_code}: {s.title}</option>
-          ))}
+          {userStories.stories.map((s,i)=><option key={i} value={i}>{s.story_code}: {s.title}</option>)}
         </select>
 
-        <button className="btn btn-primary" onClick={handleGenerate} disabled={loading || selectedIdx === ''}>
-          <FlaskConical size={13} />
-          {loading ? 'Generating Scenarios...' : 'Generate Acceptance Criteria →'}
+        <button className="btn btn-primary" onClick={generate} disabled={loading||idx===''}>
+          <FlaskConical size={13}/>{loading?'Generating Scenarios...':'Generate Acceptance Criteria →'}
         </button>
 
-        {loading && (
-          <>
-            <div className="loading-bar"><div className="loading-bar-track" /></div>
-            <p className="loading-hint">writing BDD acceptance scenarios...</p>
-          </>
-        )}
+        {loading&&<><div className="load-bar"><div className="load-fill"/></div><p className="load-hint">writing BDD scenarios...</p></>}
 
-        {criteria?.criteria?.length > 0 && (
-          <div style={{ marginTop: 22 }}>
-            <div className="req-group" style={{ marginTop: 0 }}>
-              <FlaskConical size={12} color="#a78bfa" />
-              {criteria.criteria.length} scenario{criteria.criteria.length !== 1 ? 's' : ''} generated
+        {criteria?.criteria?.length>0&&(
+          <div style={{marginTop:22}}>
+            <div className="group-title" style={{marginTop:0}}>
+              <FlaskConical size={12} color="var(--purple)"/>
+              {criteria.criteria.length} scenario{criteria.criteria.length!==1?'s':''} generated
             </div>
-            {criteria.criteria.map((c, i) => (
+            {criteria.criteria.map((c,i)=>(
               <div key={i} className="gherkin-card">
-                <div className="gherkin-scenario">{c.scenario_name}</div>
-                <div className="gherkin-row">
-                  <span className="g-kw g-given">Given</span>
-                  <span className="g-text">{c.given}</span>
-                </div>
-                <div className="gherkin-row">
-                  <span className="g-kw g-when">When</span>
-                  <span className="g-text">{c.when}</span>
-                </div>
-                <div className="gherkin-row">
-                  <span className="g-kw g-then">Then</span>
-                  <span className="g-text">{c.then}</span>
-                </div>
+                <div className="g-scenario">{c.scenario_name}</div>
+                <div className="g-row"><span className="g-kw g-given">Given</span><span className="g-text">{c.given}</span></div>
+                <div className="g-row"><span className="g-kw g-when">When</span><span className="g-text">{c.when}</span></div>
+                <div className="g-row"><span className="g-kw g-then">Then</span><span className="g-text">{c.then}</span></div>
               </div>
             ))}
           </div>
@@ -99,6 +71,4 @@ const CriteriaSection = ({ userStories }) => {
       </div>
     </div>
   );
-};
-
-export default CriteriaSection;
+}

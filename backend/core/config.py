@@ -15,18 +15,19 @@ class Settings:
 class APIConfig:
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-    # openrouter/auto = OpenRouter picks the best available model automatically
-    # Falls back through free models if one is rate-limited or down
+    # openrouter/auto routes to whichever free model is available + not rate-limited
+    # Fallback list tried in order if auto also fails
     FREE_MODELS = [
         "openrouter/auto",
+        "openrouter/free"
         "meta-llama/llama-3.3-70b-instruct:free",
         "deepseek/deepseek-chat-v3-0324:free",
         "google/gemma-3-12b-it:free",
         "mistralai/mistral-7b-instruct:free",
         "qwen/qwen3-8b:free",
+        "microsoft/mai-ds-r1:free",
     ]
-
-    CHAT_MODEL = FREE_MODELS[0]
+    CHAT_MODEL = FREE_MODELS[1]
 
     OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
