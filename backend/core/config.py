@@ -27,7 +27,7 @@ class APIConfig:
         "qwen/qwen3-8b:free",
         "microsoft/mai-ds-r1:free",
     ]
-    CHAT_MODEL = FREE_MODELS[1]
+    CHAT_MODEL = FREE_MODELS[0]
 
     OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
