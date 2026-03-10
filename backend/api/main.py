@@ -20,7 +20,7 @@ from backend.core.config import settings
 # Initialize FastAPI app
 app = FastAPI(
     title="BA Copilot API",
-    description="AI-powered assistant for Business Analysts (100% FREE Edition)",
+    description="AI-powered assistant for Business Analysts",
     version="2.0.0 FREE"
 )
 

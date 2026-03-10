@@ -127,7 +127,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
+            <div className="footer-legal">2026 BA Copilot. All rights reserved.</div>
           </div>
         </footer>
       </div>
@@ -352,7 +352,7 @@ function ServicesPage({ onTryIt }) {
           <div className="svc-eyebrow"><Zap size={12} />Platform Services</div>
           <h1 className="svc-h1">Everything you need<br />to <em>ship faster</em></h1>
           <p className="svc-sub">
-            A full business analysis platform powered by the best free AI models.
+            A full business analysis platform powered by the best AI models.
             Built for analysts, product managers and founders.
           </p>
         </div>
