@@ -103,7 +103,7 @@ export default function App() {
             <span className="footer-name">BA <em>Copilot</em></span>
           </div>
           <div className="footer-links">
-            <a href="#" className="footer-link" onClick={e => { e.preventDefault(); setPage('services'); }}>Services</a>
+            <button className="footer-link" onClick={() => setPage('services')} style={{background:'none',border:'none',cursor:'pointer',padding:0,font:'inherit'}}>Services</button>
             <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="footer-link">OpenRouter</a>
             <a href="https://github.com/Robu71111/BA-copilot" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
           </div>
