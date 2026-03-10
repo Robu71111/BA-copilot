@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderPlus, Trash2, Briefcase, Home, Layers, BookOpen } from 'lucide-react';
+import { FolderPlus, Trash2, Briefcase, Home, Layers, BookOpen, ChevronRight } from 'lucide-react';
 
 export default function Sidebar({ projects=[], selected, onSelect, onCreate, onDelete, isOpen, currentPage, onNav }) {
   const [showForm, setShowForm] = useState(false);
@@ -13,74 +13,64 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
     setShowForm(false);
   };
 
-  // Only show on mobile (CSS hides on desktop)
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sb-nav">
-        {/* Mobile nav links */}
-        <div className="sb-section-label">Platform</div>
+        <div className="sb-section-label">Navigation</div>
         <div className={`nav-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => onNav('home')}>
-          <div className="nav-icon"><Home size={12} /></div>
-          <span className="nav-label-text">Home</span>
+          <div className="nav-icon"><Home size={18} /></div>
+          <span>Home</span>
         </div>
         <div className={`nav-item ${currentPage === 'services' ? 'active' : ''}`} onClick={() => onNav('services')}>
-          <div className="nav-icon"><Layers size={12} /></div>
-          <span className="nav-label-text">Services</span>
-        </div>
-        <div className={`nav-item ${currentPage === 'workspace' ? 'active' : ''}`} onClick={() => onNav('workspace')}>
-          <div className="nav-icon"><BookOpen size={12} /></div>
-          <span className="nav-label-text">Workspace</span>
+          <div className="nav-icon"><Layers size={18} /></div>
+          <span>Services</span>
         </div>
 
-        <div className="sb-divider" />
-
-        {/* Projects */}
-        <div className="sb-section-label">Projects</div>
-        <button className="btn-new-proj" onClick={() => setShowForm(v => !v)}>
-          <FolderPlus size={12} /> New Project
-        </button>
-
-        {showForm && (
-          <form className="create-form" onSubmit={submit}>
-            <input className="cf-input" placeholder="project-name" value={form.name}
-              onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
-            <div className="cf-row">
-              <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Create</button>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form>
-        )}
-
+        <div className="sb-section-label">Your Projects</div>
         {projects.map(p => {
           const id = p.id || p.project_id;
-          const name = p.project_name || p.name;
           const active = selected && (selected.id || selected.project_id) === id;
           return (
-            <div key={id} className={`proj-item ${active ? 'active' : ''}`} onClick={() => onSelect(p)}>
-              <div className="proj-ico"><Briefcase size={10} /></div>
-              <span className="proj-name">{name}</span>
-              <button className="proj-del" onClick={e => { e.stopPropagation(); onDelete(id); }} title="Delete">
-                <Trash2 size={10} />
+            <div key={id} className={`nav-item ${active ? 'active' : ''}`} onClick={() => onSelect(p)}>
+              <div className="nav-icon"><Briefcase size={16} /></div>
+              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {p.project_name || p.name}
+              </span>
+              <button className="proj-del" onClick={e => { e.stopPropagation(); onDelete(id); }}>
+                <Trash2 size={14} />
               </button>
             </div>
           );
         })}
 
-        {projects.length === 0 && (
-          <div style={{ padding: '6px 10px', fontSize: 11, color: 'var(--t4)', fontFamily: 'Geist Mono, monospace' }}>
-            no projects yet
-          </div>
+        {!showForm ? (
+          <button className="btn-new-proj" onClick={() => setShowForm(true)} style={{ marginTop: 12 }}>
+            <FolderPlus size={14} /> New Project
+          </button>
+        ) : (
+          <form onSubmit={submit} className="create-form">
+            <input 
+              className="cf-input" 
+              placeholder="Project Name" 
+              value={form.name} 
+              onChange={e => setForm({...form, name: e.target.value})}
+              autoFocus
+            />
+            <div className="cf-row">
+              <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Add</button>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
+            </div>
+          </form>
         )}
       </div>
 
-      <div className="sb-footer">
-        <div className="sb-user">
-          <div className="sb-avatar">BA</div>
-          <div className="sb-user-info">
-            <div className="sb-user-name">Analyst</div>
-            <div className="sb-user-role">Free Plan</div>
+      <div className="sb-footer" style={{ padding: '20px', borderTop: '1px solid var(--b1)' }}>
+        <div className="sb-user" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <div className="sb-avatar">VS</div>
+          <div>
+            <div className="sb-user-name">Vishva Shukla</div>
+            <div className="sb-user-role">Enterprise Admin</div>
           </div>
-          <div className="sb-plan">FREE</div>
         </div>
       </div>
     </div>
