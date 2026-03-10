@@ -1,5 +1,5 @@
 """
-User Story Generator — multi-model fallback via openrouter/auto
+User Story Generator — robust multi-model fallback.
 """
 import requests
 import time
@@ -13,17 +13,8 @@ class UserStoryGenerator:
         self.api_configured = bool(APIConfig.OPENROUTER_API_KEY)
 
     def _call_model(self, model, prompt):
-        payload = {
-            "model": model,
-            "messages": [{"role": "user", "content": prompt}],
-            **APIConfig.GENERATION_CONFIG
-        }
-        return requests.post(
-            f"{APIConfig.OPENROUTER_BASE_URL}/chat/completions",
-            headers=APIConfig.get_headers(),
-            json=payload,
-            timeout=120
-        )
+        payload = {"model": model, "messages": [{"role": "user", "content": prompt}], **APIConfig.GENERATION_CONFIG}
+        return requests.post(f"{APIConfig.OPENROUTER_BASE_URL}/chat/completions", headers=APIConfig.get_headers(), json=payload, timeout=120)
 
     def generate(self, requirements_text, project_type="General"):
         if not self.api_configured:
@@ -36,45 +27,50 @@ class UserStoryGenerator:
             try:
                 print(f"Trying model: {model}")
                 response = self._call_model(model, prompt)
+                body = response.text
 
                 if response.status_code == 429:
-                    print(f"Rate limited on {model}, trying next...")
-                    time.sleep(2)
-                    continue
+                    print(f"HTTP 429 on {model}"); time.sleep(1); continue
+
+                if APIConfig.is_rate_limit_error(body):
+                    print(f"Body rate-limit on {model}: {body[:100]}"); time.sleep(1); continue
 
                 if response.status_code != 200:
-                    last_error = f"HTTP {response.status_code}: {response.text[:200]}"
-                    print(f"Error on {model}: {last_error}")
-                    continue
+                    last_error = f"HTTP {response.status_code}: {body[:200]}"; continue
 
                 data = response.json()
-                raw_output = data['choices'][0]['message']['content']
-                stories = self._parse_user_stories(raw_output)
+                if 'error' in data:
+                    err_msg = str(data['error'])
+                    if APIConfig.is_rate_limit_error(err_msg): continue
+                    last_error = err_msg; continue
 
+                if not data.get('choices'):
+                    last_error = "Empty choices"; continue
+
+                content = data['choices'][0]['message']['content']
+                if APIConfig.is_rate_limit_error(content): continue
+
+                stories = self._parse_user_stories(content)
                 if stories:
-                    print(f"Success with model: {model}")
-                    return {'stories': stories, 'raw_output': raw_output, 'total_count': len(stories)}
+                    print(f"Success with {model} — {len(stories)} stories")
+                    return {'stories': stories, 'raw_output': content, 'total_count': len(stories)}
 
-                last_error = "No stories parsed from response"
-                continue
+                last_error = "No stories parsed"; continue
 
+            except requests.exceptions.Timeout:
+                last_error = "Timeout"; print(f"Timeout on {model}"); continue
             except Exception as e:
-                last_error = str(e)
-                print(f"Exception on {model}: {e}")
-                continue
+                last_error = str(e); print(f"Exception on {model}: {e}"); continue
 
-        raise Exception(f"All models failed. Last error: {last_error}. Please try again in 1-2 minutes.")
+        raise Exception(f"All models failed. Last error: {last_error}. Try again in 1-2 minutes.")
 
     def _parse_user_stories(self, text):
         stories = []
-        story_blocks = re.split(r'\n---+\n', text)
-        for block in story_blocks:
+        for block in re.split(r'\n---+\n', text):
             block = block.strip()
-            if not block or len(block) < 50:
-                continue
+            if not block or len(block) < 50: continue
             story = self._extract_story_fields(block)
-            if story and story.get('story_code'):
-                stories.append(story)
+            if story and story.get('story_code'): stories.append(story)
         return stories
 
     def _extract_story_fields(self, block):
@@ -96,13 +92,12 @@ class UserStoryGenerator:
         return story
 
     def format_for_jira(self, stories_data):
-        csv_lines = ["Summary,Description,Priority,Story Points,Issue Type"]
-        for story in stories_data['stories']:
-            csv_lines.append(f'"{story["title"]}","{story["user_story"]}",{story["priority"]},{story["story_points"]},Story')
-        return '\n'.join(csv_lines)
+        lines = ["Summary,Description,Priority,Story Points,Issue Type"]
+        for s in stories_data['stories']:
+            lines.append(f'"{s["title"]}","{s["user_story"]}",{s["priority"]},{s["story_points"]},Story')
+        return '\n'.join(lines)
 
-    def is_configured(self):
-        return self.api_configured
+    def is_configured(self): return self.api_configured
 
 
 story_gen = UserStoryGenerator()
