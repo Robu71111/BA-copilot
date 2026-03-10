@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Mic, CheckCircle, Pencil, AlertTriangle, Zap } from 'lucide-react';
+import { Upload, FileText, Mic, CheckCircle, Pencil, AlertTriangle } from 'lucide-react';
 import { inputApi } from '../services/api';
 import AudioRecorder from './AudioRecorder';
 
