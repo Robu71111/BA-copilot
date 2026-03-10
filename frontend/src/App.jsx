@@ -320,7 +320,9 @@ function ServicesPage({ onTryIt }) {
           </p>
         </div>
 
-        <div className="svc-grid">
+        <div style={{position:"relative"}}>
+        <div className="svc-grid-bg" />
+        <div className="svc-grid" style={{position:"relative",zIndex:1}}>
           {cards.map(({ icon: Icon, iconColor, iconBg, tag, tagLabel, title, featured, desc, features }) => (
             <div key={title} className={`svc-card ${featured ? 'featured' : ''} ${tag === 'coming' ? 'coming' : ''}`}>
               {featured && <div className="svc-card-glow" />}
@@ -344,6 +346,7 @@ function ServicesPage({ onTryIt }) {
           ))}
         </div>
 
+        </div>
         <div className="consult-banner">
           <div className="consult-inner">
             <div className="consult-title">Need hands-on <em>consultancy</em>?</div>
