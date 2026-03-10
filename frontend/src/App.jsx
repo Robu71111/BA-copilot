@@ -101,19 +101,34 @@ export default function App() {
 
         <footer className="home-footer">
           <div className="footer-brand">
-            <div className="footer-gem"><Zap size={10} color="#fff" fill="#fff" /></div>
-            <span className="footer-name">BA <em>Copilot</em></span>
+            <div className="footer-gem"><Zap size={14} color="#fff" fill="#fff" /></div>
+            <div>
+              <div className="footer-name">BA <em>Copilot</em></div>
+              <div className="footer-copy">AI-powered business analysis platform</div>
+            </div>
           </div>
-          <div className="footer-links">
-            <button className="footer-link" onClick={() => setPage('services')}>Services</button>
-            <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="footer-link">OpenRouter</a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
+          <div>
+            <div className="footer-links-heading">Platform</div>
+            <div className="footer-links">
+              <button className="footer-link" onClick={() => setPage('home')}>Home</button>
+              <button className="footer-link" onClick={() => setPage('services')}>Services</button>
+              <button className="footer-link" onClick={() => setPage('workspace')}>Workspace</button>
+            </div>
           </div>
-          <div className="footer-status">
-            <div className="footer-status-dot" />
-            {healthy ? 'All systems operational' : 'Backend offline'}
+          <div>
+            <div className="footer-links-heading">Resources</div>
+            <div className="footer-links">
+              <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="footer-link">OpenRouter</a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
+            </div>
           </div>
-          <div className="footer-copy">2026 BA Copilot Built with OpenRouter AI</div>
+          <div className="footer-status-block">
+            <div className="footer-status">
+              <div className="footer-status-dot" />
+              {healthy ? 'All systems operational' : 'Backend offline'}
+            </div>
+            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
+          </div>
         </footer>
       </div>
     );
