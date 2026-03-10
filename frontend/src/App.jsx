@@ -127,7 +127,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot. All rights reserved</div>
+            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
           </div>
         </footer>
       </div>
@@ -163,7 +163,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'system-online' : 'system-offline'}
+            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
           </div>
         </div>
       </nav>
@@ -210,7 +210,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
           ) : (
             <form className="wl-form" onSubmit={submit}>
               <div className="wl-form-title">New Project</div>
-              <input className="cf-input" placeholder="Project name (e.g. Fintech App)" value={form.name}
+              <input className="cf-input" placeholder="Project name (e.g. plentycart)" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
               <select className="f-select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                 <option>Web Application</option>
@@ -245,9 +245,46 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
                   const id = p.id || p.project_id;
                   const name = p.project_name || p.name;
                   return (
-                    <button key={id} className="wl-proj-btn" onClick={() => onSelect(p)}>
-                      <span>{name}</span><ChevronRight size={12} />
-                    </button>
+                    <div key={id} className="wl-proj-btn" style={{display:'flex',alignItems:'center',gap:0,padding:0,overflow:'hidden'}}>
+                      <button
+                        onClick={() => onSelect(p)}
+                        style={{flex:1,display:'flex',alignItems:'center',justifyContent:'space-between',
+                          padding:'14px 20px',background:'transparent',border:'none',
+                          color:'var(--t2)',fontSize:15,fontWeight:500,cursor:'pointer',textAlign:'left',
+                          transition:'color 0.14s'}}
+                        onMouseEnter={e=>e.currentTarget.style.color='var(--t1)'}
+                        onMouseLeave={e=>e.currentTarget.style.color='var(--t2)'}
+                      >
+                        <span style={{display:'flex',alignItems:'center',gap:10}}>
+                          <span style={{
+                            width:28,height:28,borderRadius:8,background:'var(--s3)',
+                            border:'1px solid var(--b1)',display:'flex',alignItems:'center',
+                            justifyContent:'center',fontSize:11,fontWeight:700,
+                            color:'var(--p3)',flexShrink:0,fontFamily:'Geist Mono,monospace'
+                          }}>
+                            {name.charAt(0).toUpperCase()}
+                          </span>
+                          {name}
+                        </span>
+                        <ChevronRight size={13} />
+                      </button>
+                      <button
+                        onClick={e => { e.stopPropagation(); if(window.confirm(`Delete project "${name}"?`)) onDelete(id); }}
+                        title="Delete project"
+                        style={{
+                          padding:'14px 16px',background:'transparent',border:'none',
+                          borderLeft:'1px solid var(--b1)',color:'var(--t4)',
+                          cursor:'pointer',display:'flex',alignItems:'center',
+                          transition:'all 0.14s',flexShrink:0
+                        }}
+                        onMouseEnter={e=>{ e.currentTarget.style.background='rgba(244,63,94,0.08)'; e.currentTarget.style.color='var(--rose)'; }}
+                        onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--t4)'; }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                        </svg>
+                      </button>
+                    </div>
                   );
                 })}
               </div>

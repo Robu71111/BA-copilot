@@ -1,154 +1,130 @@
 """
-AI Prompt Templates
-===================
-Optimized for FREE OpenRouter models (Gemini Flash, DeepSeek, Llama, etc.)
+AI Prompt Templates — v3
+Optimized for free OpenRouter models. Strict formatting. Zero duplicates.
 """
 
 
 class PromptTemplates:
-    """Collection of all AI prompt templates optimized for free models"""
-    
+
     @staticmethod
     def requirements_extractor(raw_text, project_type="General", industry="General"):
-        """
-        Prompt for extracting requirements from raw text.
-        Optimized for free models with clear, strict formatting.
-        """
-        return f"""You are a Business Analyst expert. Extract requirements from the text below.
+        return f"""You are a senior Business Analyst. Extract structured requirements from the input text.
 
-PROJECT CONTEXT:
-- Type: {project_type}
-- Industry: {industry}
+PROJECT CONTEXT: Type={project_type}, Industry={industry}
 
-DEFINITIONS:
-- FUNCTIONAL requirements: WHAT the system must DO — features, behaviours, user actions, data operations.
-  Examples: "The system shall allow users to log in", "The system shall process payments via Stripe".
-- NON-FUNCTIONAL requirements: HOW the system must PERFORM — performance, security, scalability, reliability, compliance, usability, availability.
-  Examples: "The system shall respond within 200ms", "The system shall support 10,000 concurrent users", "The system shall be available 99.9% uptime".
+DEFINITIONS (memorize these before you start):
+- FUNCTIONAL (FR): WHAT the system must DO. Actions, features, behaviours, integrations, data operations.
+  Good examples: "The system shall allow users to log in via email", "The system shall integrate with Stripe BNPL API", "The system shall send email notifications on order completion"
+- NON-FUNCTIONAL (NFR): HOW WELL the system must perform. Quality attributes ONLY: performance, scalability, security, reliability, availability, compliance, usability, maintainability.
+  Good examples: "The system shall respond within 200ms", "The system shall support 99.9% uptime", "The system shall encrypt all user data at rest"
+  BAD non-functional: anything describing a feature or action — that belongs in Functional.
 
-STRICT OUTPUT FORMAT (FOLLOW EXACTLY):
+STRICT OUTPUT FORMAT — copy this exactly:
 
 ## Functional Requirements
 
-- FR-001: [Complete functional requirement description]
-- FR-002: [Complete functional requirement description]
-[Continue numbering...]
+- FR-001: [description]
+- FR-002: [description]
+- FR-003: [description]
 
 ## Non-Functional Requirements
 
-- NFR-001: [Complete non-functional requirement description]
-- NFR-002: [Complete non-functional requirement description]
-[Continue numbering...]
+- NFR-001: [description]
+- NFR-002: [description]
 
-CRITICAL RULES — FOLLOW EVERY ONE:
-1. NEVER repeat or duplicate the same requirement in both sections. Each requirement appears ONCE only.
-2. A requirement is either functional OR non-functional — it cannot be both. Choose the correct section.
-3. Non-functional requirements must describe quality attributes (speed, scale, security, reliability), NOT features.
-4. Start with "## Functional Requirements", use format "- FR-XXX: description"
-5. Then "## Non-Functional Requirements", use format "- NFR-XXX: description"
-6. NO intro text, NO outro text, NO commentary
-7. Extract 5-15 functional and 3-8 non-functional requirements
+MANDATORY RULES — violating any rule makes your output wrong:
+1. NEVER put the same idea in both sections. Every requirement appears EXACTLY ONCE.
+2. The FR items must be DIFFERENT from all NFR items — do not reuse the same sentence.
+3. NFR items must ONLY describe quality attributes (speed, scale, security, uptime, compliance). If it describes an action or feature, it is FR not NFR.
+4. Generate 6-12 functional requirements and 3-6 non-functional requirements.
+5. Output ONLY the two sections above. No intro, no summary, no commentary.
+6. Each requirement must be a complete sentence starting with "The system shall..."
 
-INPUT TEXT TO ANALYZE:
+INPUT TEXT:
 {raw_text}
 
-NOW EXTRACT REQUIREMENTS IN THE EXACT FORMAT ABOVE:"""
-
+OUTPUT:"""
 
     @staticmethod
     def user_story_generator(requirements_text, project_type="General"):
-        """
-        Prompt for generating user stories from requirements.
-        Optimized for free models.
-        """
-        return f"""You are a Scrum Master. Convert requirements into Agile User Stories.
+        return f"""You are an experienced Scrum Master. Convert the requirements below into Agile User Stories.
 
 PROJECT TYPE: {project_type}
 
-STRICT OUTPUT FORMAT (FOLLOW EXACTLY):
+OUTPUT FORMAT — copy exactly, one story per block:
 
 **Story ID**: US-001
-**Title**: [Short title - max 6 words]
-**User Story**: As a [role], I want [feature], so that [value]
+**Title**: [Max 6 words]
+**User Story**: As a [specific role], I want [specific feature], so that [specific business value]
 **Priority**: High
 **Story Points**: 3
 **Dependencies**: None
-**Notes**: [Any notes or None]
+**Notes**: [Specific note or None]
 
 ---
 
 **Story ID**: US-002
-**Title**: [Short title - max 6 words]
-**User Story**: As a [role], I want [feature], so that [value]
+**Title**: [Max 6 words]
+**User Story**: As a [specific role], I want [specific feature], so that [specific business value]
 **Priority**: Medium
 **Story Points**: 5
 **Dependencies**: US-001
-**Notes**: [Any notes or None]
+**Notes**: [Specific note or None]
 
 ---
 
-[Continue with more stories...]
-
 RULES:
-1. Separate each story with exactly "---"
-2. Use exact field names as shown
-3. Priority must be: High, Medium, or Low
-4. Story Points must be: 1, 2, 3, 5, 8, or 13
-5. Create 5-10 user stories minimum
+1. Separate each story with "---" on its own line
+2. Use EXACT field names as shown above
+3. Priority: High, Medium, or Low only
+4. Story Points: 1, 2, 3, 5, 8, or 13 only
+5. Generate one user story per distinct requirement
+6. Make each story independent and testable
+7. Role must be specific (e.g. "registered customer", "admin user", "QA engineer") not just "user"
 
-REQUIREMENTS TO CONVERT:
+REQUIREMENTS:
 {requirements_text}
 
-NOW GENERATE USER STORIES IN THE EXACT FORMAT ABOVE:"""
-
+OUTPUT:"""
 
     @staticmethod
     def acceptance_criteria_generator(user_story_text):
-        """
-        Prompt for generating acceptance criteria.
-        Optimized for free models.
-        """
-        return f"""You are a QA Engineer. Create Gherkin-style Acceptance Criteria for this user story.
+        return f"""You are a senior QA Engineer. Generate Gherkin BDD acceptance criteria for this user story.
 
-STRICT OUTPUT FORMAT (FOLLOW EXACTLY):
+OUTPUT FORMAT — copy exactly:
 
-**Scenario 1: Successful Login**
-- GIVEN the user is on the login page
-- AND has valid credentials
-- WHEN the user enters email and password
-- AND clicks Login button
-- THEN the system authenticates the user
-- AND redirects to dashboard
+**Scenario 1: [Descriptive scenario name]**
+- GIVEN [initial context or precondition]
+- AND [additional precondition if needed]
+- WHEN [the action taken]
+- THEN [expected outcome]
+- AND [additional outcome if needed]
 
-**Scenario 2: Invalid Password**
-- GIVEN the user is on the login page
-- WHEN the user enters incorrect password
-- THEN the system displays error message
-- AND the user remains on login page
+**Scenario 2: [Descriptive scenario name]**
+- GIVEN [initial context]
+- WHEN [the action]
+- THEN [expected outcome]
 
-**Scenario 3: [Another scenario]**
-- GIVEN [precondition]
-- WHEN [action]
-- THEN [result]
+**Scenario 3: [Descriptive scenario name]**
+- GIVEN [initial context]
+- WHEN [the action]
+- THEN [expected outcome]
 
 RULES:
-1. Create 3-5 scenarios
-2. Use GIVEN-WHEN-THEN format
-3. Use AND for multiple conditions
-4. Include happy path and error scenarios
-5. Be specific and testable
+1. Create exactly 3-5 scenarios
+2. Scenario 1 = happy path (success case)
+3. Scenario 2+ = edge cases, error cases, boundary conditions
+4. Every scenario must have at least GIVEN + WHEN + THEN
+5. Be specific and testable — avoid vague language
+6. Output ONLY the scenarios. No intro text, no summary.
 
 USER STORY:
 {user_story_text}
 
-NOW GENERATE ACCEPTANCE CRITERIA IN THE EXACT FORMAT ABOVE:"""
-
+OUTPUT:"""
 
     @staticmethod
     def summarize_meeting(transcript):
-        """
-        Prompt for summarizing meeting transcripts.
-        """
         return f"""You are a Business Analyst. Summarize this meeting transcript.
 
 OUTPUT FORMAT:
@@ -159,21 +135,17 @@ OUTPUT FORMAT:
 ## Key Discussion Points
 - [Point 1]
 - [Point 2]
-- [Point 3]
 
 ## Decisions Made
 - [Decision 1]
-- [Decision 2]
 
 ## Action Items
-- [Action 1] - Owner: [Name] - Due: [Date]
-- [Action 2] - Owner: [Name] - Due: [Date]
+- [Action] - Owner: [Name] - Due: [When]
 
-## Open Questions
-- [Question 1]
-- [Question 2]
+## Blockers & Risks
+- [Blocker or None]
 
 TRANSCRIPT:
 {transcript}
 
-NOW SUMMARIZE IN THE FORMAT ABOVE:"""
+OUTPUT:"""
