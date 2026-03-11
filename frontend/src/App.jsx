@@ -5,6 +5,7 @@ import InputSection from './components/InputSection';
 import RequirementsSection from './components/RequirementsSection';
 import StoriesSection from './components/StoriesSection';
 import CriteriaSection from './components/CriteriaSection';
+import ProcessFlowSection from './components/ProcessFlowSection';
 import { healthApi, projectApi } from './services/api';
 import { Layers, FileText, Users, FlaskConical, Menu, X, ArrowRight, Zap, ChevronRight } from 'lucide-react';
 
@@ -73,7 +74,7 @@ export default function App() {
         <div className="wake-banner">
           <span className="wake-dot" />
           <span className="wake-text">
-            System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
+            ⚡ System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
           </span>
           <button className="wake-close" onClick={e => e.currentTarget.parentElement.style.display='none'}>✕</button>
         </div>
@@ -134,7 +135,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
+            <div className="footer-legal">2026 BA Copilot. All rights reserved.</div>
           </div>
         </footer>
       </div>
@@ -170,7 +171,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'system online' : 'system offline'}
+            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
           </div>
         </div>
       </nav>
@@ -191,6 +192,7 @@ export default function App() {
 }
 
 function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input, setInput, reqs, setReqs, stories, setStories }) {
+  const [flow, setFlow] = React.useState(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', type: 'Web Application', industry: 'Technology' });
 
@@ -202,100 +204,166 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
     setShowForm(false);
   };
 
+  const steps = [
+    { num:'01', label:'Input',    desc:'Paste text, upload doc or record voice',          color:'#8f9fff' },
+    { num:'02', label:'Extract',  desc:'AI extracts functional & non-functional reqs',    color:'#d97dbc' },
+    { num:'03', label:'Stories',  desc:'Scrum user stories with story points',            color:'#f47ba0' },
+    { num:'04', label:'Criteria', desc:'Gherkin BDD acceptance scenarios',                color:'#F67D31' },
+    { num:'05', label:'Flow',     desc:'Auto-generate process flow diagram',              color:'#22c55e' },
+  ];
+
   if (!current) {
     return (
       <div className="workspace-landing">
-        <div className="wl-inner">
-          <div className="wl-icon"><Zap size={22} color="#fff" fill="#fff" /></div>
-          <h2 className="wl-title">Your Workspace</h2>
-          <p className="wl-sub">Create a project to start analysing requirements, generating user stories and acceptance criteria.</p>
 
+        {/* ── LEFT panel ── */}
+        <div className="wl-left">
+          <div className="wl-left-inner">
+            <div className="wl-icon"><Zap size={22} color="#fff" fill="#fff" /></div>
+            <h2 className="wl-title">BA<br />Workspace</h2>
+            <p className="wl-sub">From raw notes to professional requirements, user stories, and process diagrams — in minutes.</p>
+            <div className="wl-steps">
+              {steps.map(({ num, label, desc, color }) => (
+                <div key={num} className="wl-step">
+                  <span className="wl-step-num" style={{ background:`${color}18`, color, border:`1px solid ${color}33` }}>{num}</span>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:700, color:'var(--t1)', marginBottom:2 }}>{label}</div>
+                    <div style={{ fontSize:12, color:'var(--t2)', fontFamily:'Geist,sans-serif' }}>{desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── RIGHT panel ── */}
+        <div className="wl-right">
           {!showForm ? (
-            <button className="btn btn-hero-primary" onClick={() => setShowForm(true)}>
-              <Zap size={13} /> Create New Project
-            </button>
+            <>
+              <div className="wl-right-header">Your Projects</div>
+              <button className="wl-create-btn" onClick={() => setShowForm(true)}>
+                <Zap size={16} fill="white" /> New Project
+              </button>
+
+              {projects.length > 0 && (
+                <>
+                  <div className="wl-proj-divider">
+                    <div className="wl-proj-divider-line"/>
+                    <div className="wl-proj-divider-text">Continue existing</div>
+                    <div className="wl-proj-divider-line"/>
+                  </div>
+                  <div className="wl-proj-list">
+                    {projects.map(p => {
+                      const id = p.id || p.project_id;
+                      const name = p.project_name || p.name;
+                      const type = p.project_type || p.type || '';
+                      return (
+                        <div key={id} className="wl-proj-btn">
+                          <button onClick={() => onSelect(p)} style={{
+                            flex:1, display:'flex', alignItems:'center', gap:14,
+                            padding:'14px 18px', background:'transparent', border:'none',
+                            color:'var(--t2)', fontSize:15, fontWeight:500, cursor:'pointer',
+                            textAlign:'left', transition:'color 0.14s',
+                          }}
+                            onMouseEnter={e=>e.currentTarget.style.color='var(--t1)'}
+                            onMouseLeave={e=>e.currentTarget.style.color='var(--t2)'}
+                          >
+                            <span style={{
+                              width:36, height:36, borderRadius:10,
+                              background:'linear-gradient(135deg,rgba(143,1,119,0.2),rgba(222,26,88,0.15))',
+                              border:'1px solid rgba(143,1,119,0.25)',
+                              display:'flex', alignItems:'center', justifyContent:'center',
+                              fontSize:15, fontWeight:800, color:'#d97dbc', flexShrink:0,
+                            }}>
+                              {name.charAt(0).toUpperCase()}
+                            </span>
+                            <span style={{flex:1, minWidth:0}}>
+                              <span style={{display:'block', fontWeight:600, color:'var(--t1)', fontSize:15}}>{name}</span>
+                              {type && <span style={{fontSize:12, color:'var(--t3)', fontFamily:'Geist Mono,monospace'}}>{type}</span>}
+                            </span>
+                            <ChevronRight size={14} style={{flexShrink:0, opacity:0.5}} />
+                          </button>
+                          <button
+                            onClick={e => { e.stopPropagation(); if(window.confirm(`Delete "${name}"?`)) onDelete(id); }}
+                            style={{
+                              padding:'14px 16px', background:'transparent', border:'none',
+                              borderLeft:'1px solid var(--b1)', color:'var(--t3)',
+                              cursor:'pointer', display:'flex', alignItems:'center', transition:'all 0.14s', flexShrink:0,
+                            }}
+                            onMouseEnter={e=>{ e.currentTarget.style.background='rgba(244,63,94,0.08)'; e.currentTarget.style.color='var(--rose)'; }}
+                            onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--t3)'; }}
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                              <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {projects.length === 0 && (
+                <div style={{
+                  textAlign:'center', padding:'48px 24px',
+                  color:'var(--t3)', fontSize:14, fontFamily:'Geist,sans-serif', lineHeight:1.7,
+                }}>
+                  <div style={{fontSize:32, marginBottom:12}}>📋</div>
+                  No projects yet.<br/>Create your first one above.
+                </div>
+              )}
+            </>
           ) : (
             <form className="wl-form" onSubmit={submit}>
-              <div className="wl-form-title">New Project</div>
-              <input className="cf-input" placeholder="Project name (e.g. fintech app)" value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
-              <select className="f-select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
-                <option>Web Application</option>
-                <option>Mobile App</option>
-                <option>API / Backend</option>
-                <option>Data Platform</option>
-                <option>E-Commerce</option>
-                <option>Enterprise System</option>
-                <option>Other</option>
-              </select>
-              <select className="f-select" value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })}>
-                <option>Technology</option>
-                <option>Finance</option>
-                <option>Healthcare</option>
-                <option>Retail</option>
-                <option>Education</option>
-                <option>Logistics</option>
-                <option>Other</option>
-              </select>
-              <div className="cf-row" style={{ marginTop: 4 }}>
-                <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Create Project</button>
-                <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
+              <div className="wl-form-header">
+                <div className="wl-form-title">New Project</div>
+                <button type="button" className="wl-form-close" onClick={() => setShowForm(false)}>✕</button>
               </div>
+              <div className="wl-field">
+                <label className="wl-label">Project Name</label>
+                <input className="cf-input" placeholder="e.g. Plentycart, AuthService, DataPipeline"
+                  value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
+              </div>
+              <div className="wl-field">
+                <label className="wl-label">Project Type</label>
+                <div className="wl-type-grid">
+                  {[
+                    { v:'Web Application',   emoji:'🌐', hint:'Frontend + backend' },
+                    { v:'Mobile App',        emoji:'📱', hint:'iOS / Android' },
+                    { v:'API / Backend',     emoji:'⚙️',  hint:'Services & endpoints' },
+                    { v:'E-Commerce',        emoji:'🛒', hint:'Retail & payments' },
+                    { v:'Data Platform',     emoji:'📊', hint:'Analytics & pipelines' },
+                    { v:'Enterprise System', emoji:'🏢', hint:'Internal tooling' },
+                  ].map(({ v, emoji, hint }) => (
+                    <button key={v} type="button"
+                      className={`wl-type-card ${form.type === v ? 'selected' : ''}`}
+                      onClick={() => setForm({ ...form, type: v })}>
+                      <span className="wl-type-emoji">{emoji}</span>
+                      <span className="wl-type-name">{v}</span>
+                      <span className="wl-type-hint">{hint}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="wl-field">
+                <label className="wl-label">Industry</label>
+                <div className="wl-industry-row">
+                  {['Technology','Finance','Healthcare','Retail','Education','Logistics','Other'].map(ind => (
+                    <button key={ind} type="button"
+                      className={`wl-ind-pill ${form.industry === ind ? 'selected' : ''}`}
+                      onClick={() => setForm({ ...form, industry: ind })}>
+                      {ind}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button type="submit" className="wl-create-btn" style={{marginBottom:0,marginTop:8}}
+                disabled={!form.name.trim()}>
+                <Zap size={15} fill="white"/> Create Project
+              </button>
             </form>
-          )}
-
-          {projects.length > 0 && !showForm && (
-            <div className="wl-existing">
-              <div className="wl-existing-label">Or continue with an existing project</div>
-              <div className="wl-proj-list">
-                {projects.map(p => {
-                  const id = p.id || p.project_id;
-                  const name = p.project_name || p.name;
-                  return (
-                    <div key={id} className="wl-proj-btn" style={{display:'flex',alignItems:'center',gap:0,padding:0,overflow:'hidden'}}>
-                      <button
-                        onClick={() => onSelect(p)}
-                        style={{flex:1,display:'flex',alignItems:'center',justifyContent:'space-between',
-                          padding:'14px 20px',background:'transparent',border:'none',
-                          color:'var(--t2)',fontSize:15,fontWeight:500,cursor:'pointer',textAlign:'left',
-                          transition:'color 0.14s'}}
-                        onMouseEnter={e=>e.currentTarget.style.color='var(--t1)'}
-                        onMouseLeave={e=>e.currentTarget.style.color='var(--t2)'}
-                      >
-                        <span style={{display:'flex',alignItems:'center',gap:10}}>
-                          <span style={{
-                            width:28,height:28,borderRadius:8,background:'var(--s3)',
-                            border:'1px solid var(--b1)',display:'flex',alignItems:'center',
-                            justifyContent:'center',fontSize:13,fontWeight:700,
-                            color:'var(--p3)',flexShrink:0,fontFamily:'Geist Mono,monospace'
-                          }}>
-                            {name.charAt(0).toUpperCase()}
-                          </span>
-                          {name}
-                        </span>
-                        <ChevronRight size={13} />
-                      </button>
-                      <button
-                        onClick={e => { e.stopPropagation(); if(window.confirm(`Delete project "${name}"?`)) onDelete(id); }}
-                        title="Delete project"
-                        style={{
-                          padding:'14px 16px',background:'transparent',border:'none',
-                          borderLeft:'1px solid var(--b1)',color:'var(--t2)',
-                          cursor:'pointer',display:'flex',alignItems:'center',
-                          transition:'all 0.14s',flexShrink:0
-                        }}
-                        onMouseEnter={e=>{ e.currentTarget.style.background='rgba(244,63,94,0.08)'; e.currentTarget.style.color='var(--rose)'; }}
-                        onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--t4)'; }}
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-                        </svg>
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           )}
         </div>
       </div>
@@ -309,6 +377,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
         {input && <RequirementsSection inputId={input.input_id} onComplete={setReqs} />}
         {reqs && <StoriesSection requirements={reqs} onComplete={setStories} />}
         {stories && <CriteriaSection userStories={stories} />}
+        {stories && <ProcessFlowSection userStories={stories} projectName={current?.project_name || current?.name || 'System'} />}
       </div>
     </div>
   );
