@@ -19,8 +19,7 @@ class APIConfig:
     # openrouter/auto REMOVED — it routes to dead/unavailable models silently
     # All models below are confirmed available on OpenRouter free tier
     FREE_MODELS = [
-        "openrouter/auto:free",
-        "openrouter/free"
+        'openrouter/free'  # OpenRouter's free-tier model, dynamically routes to best available
     ]
 
     CHAT_MODEL = FREE_MODELS[0]

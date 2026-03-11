@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderPlus, Trash2, Briefcase, Home, Layers } from 'lucide-react';
+import { FolderPlus, Trash2, Briefcase, Zap, Home, Layers, BookOpen } from 'lucide-react';
 
 export default function Sidebar({ projects=[], selected, onSelect, onCreate, onDelete, isOpen, currentPage, onNav }) {
   const [showForm, setShowForm] = useState(false);
@@ -13,65 +13,84 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
     setShowForm(false);
   };
 
+  // Only show on mobile (CSS hides on desktop)
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sb-nav">
-        <div className="sb-section-label">Navigation</div>
+        {/* Mobile nav links */}
+        <div className="sb-section-label">Platform</div>
         <div className={`nav-item ${currentPage === 'home' ? 'active' : ''}`} onClick={() => onNav('home')}>
-          <div className="nav-icon"><Home size={18} /></div>
-          <span>Home</span>
+          <div className="nav-icon"><Home size={12} /></div>
+          <span className="nav-label-text">Home</span>
         </div>
         <div className={`nav-item ${currentPage === 'services' ? 'active' : ''}`} onClick={() => onNav('services')}>
-          <div className="nav-icon"><Layers size={18} /></div>
-          <span>Services</span>
+          <div className="nav-icon"><Layers size={12} /></div>
+          <span className="nav-label-text">Services</span>
+        </div>
+        <div className={`nav-item ${currentPage === 'services' ? 'active' : ''}`} onClick={() => onNav('services')}>
+          <div className="nav-icon"><Layers size={12} /></div>
+          <span className="nav-label-text">Services</span>
         </div>
 
-        <div className="sb-section-label">Your Projects</div>
+        {/* Workspace — prominent CTA */}
+        <button
+          className={`sb-workspace-btn ${currentPage === 'workspace' ? 'active' : ''}`}
+          onClick={() => onNav('workspace')}
+        >
+          <BookOpen size={13} />
+          <span>Workspace</span>
+          {currentPage !== 'workspace' && <span className="sb-ws-arrow">→</span>}
+        </button>
+
+        <div className="sb-divider" />
+
+        {/* Projects */}
+        <div className="sb-section-label">Projects</div>
+        <button className="btn-new-proj" onClick={() => setShowForm(v => !v)}>
+          <FolderPlus size={12} /> New Project
+        </button>
+
+        {showForm && (
+          <form className="create-form" onSubmit={submit}>
+            <input className="cf-input" placeholder="project-name" value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
+            <div className="cf-row">
+              <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Create</button>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowForm(false)}>Cancel</button>
+            </div>
+          </form>
+        )}
+
         {projects.map(p => {
           const id = p.id || p.project_id;
+          const name = p.project_name || p.name;
           const active = selected && (selected.id || selected.project_id) === id;
           return (
-            <div key={id} className={`nav-item ${active ? 'active' : ''}`} onClick={() => onSelect(p)}>
-              <div className="nav-icon"><Briefcase size={16} /></div>
-              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {p.project_name || p.name}
-              </span>
-              <button className="proj-del" onClick={e => { e.stopPropagation(); onDelete(id); }}>
-                <Trash2 size={14} />
+            <div key={id} className={`proj-item ${active ? 'active' : ''}`} onClick={() => onSelect(p)}>
+              <div className="proj-ico"><Briefcase size={10} /></div>
+              <span className="proj-name">{name}</span>
+              <button className="proj-del" onClick={e => { e.stopPropagation(); onDelete(id); }} title="Delete">
+                <Trash2 size={10} />
               </button>
             </div>
           );
         })}
 
-        {!showForm ? (
-          <button className="btn-new-proj" onClick={() => setShowForm(true)} style={{ marginTop: 12 }}>
-            <FolderPlus size={14} /> New Project
-          </button>
-        ) : (
-          <form onSubmit={submit} className="create-form" style={{ padding: '0 14px' }}>
-            <input 
-              className="cf-input" 
-              placeholder="Project Name" 
-              style={{ width: '100%', padding: '8px', background: 'var(--s2)', border: '1px solid var(--b2)', borderRadius: '4px', color: 'white', marginBottom: '8px' }}
-              value={form.name} 
-              onChange={e => setForm({...form, name: e.target.value})}
-              autoFocus
-            />
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: '4px' }}>Add</button>
-              <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: '4px' }} onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form>
+        {projects.length === 0 && (
+          <div style={{ padding: '6px 10px', fontSize: 11, color: 'var(--t4)', fontFamily: 'Geist Mono, monospace' }}>
+            no projects yet
+          </div>
         )}
       </div>
 
-      <div className="sb-footer" style={{ padding: '20px', borderTop: '1px solid var(--b1)' }}>
-        <div className="sb-user" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <div className="sb-avatar" style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--p1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>BA</div>
-          <div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold' }}>BA Copilot</div>
-            <div style={{ fontSize: '10px', color: 'var(--t3)' }}>User</div>
+      <div className="sb-footer">
+        <div className="sb-user">
+          <div className="sb-avatar">BA</div>
+          <div className="sb-user-info">
+            <div className="sb-user-name">BA Copilot</div>
+            <div className="sb-user-role">User</div>
           </div>
+          <div className="sb-plan">FREE</div>
         </div>
       </div>
     </div>

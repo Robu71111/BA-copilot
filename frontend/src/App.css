@@ -180,6 +180,25 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 }
 .nav-item:hover { background:var(--s2); color:var(--t1) }
 .nav-item.active { background:var(--p2-bg); color:var(--t1); border-color:rgba(143,1,119,0.2) }
+.sb-workspace-btn {
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:10px 12px; border-radius:10px;
+  background:linear-gradient(135deg, rgba(143,1,119,0.18), rgba(222,26,88,0.12));
+  border:1px solid rgba(143,1,119,0.3);
+  color:var(--t1); font-size:15px; font-weight:600;
+  cursor:pointer; transition:all 0.16s; margin-top:4px;
+  font-family:'Geist',sans-serif;
+}
+.sb-workspace-btn:hover {
+  background:linear-gradient(135deg, rgba(143,1,119,0.28), rgba(222,26,88,0.2));
+  border-color:rgba(143,1,119,0.5);
+  transform:translateX(2px);
+}
+.sb-workspace-btn.active {
+  background:linear-gradient(135deg, rgba(143,1,119,0.25), rgba(222,26,88,0.18));
+  border-color:var(--p2); color:#d97dbc;
+}
+.sb-ws-arrow { margin-left:auto; opacity:0.6; font-size:13px; }
 .nav-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--s3); border:1px solid var(--b1); color:var(--t3) }
 .nav-label-text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
 .sb-divider { height:1px; background:var(--b1); margin:8px 10px }
@@ -235,7 +254,7 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 /* ═══════════════════════════════════════
    MAIN CONTENT AREA
 ═══════════════════════════════════════ */
-.main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0 }
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; position:relative; }
 
 /* ═══════════════════════════════════════
    HOME PAGE
@@ -513,6 +532,7 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
   flex:1; display:grid; grid-template-columns:1fr 1fr;
   overflow:hidden; position:relative; min-height:0;
 }
+.wl-right { overflow-y:auto; }
 /* wl-right scrolls independently on desktop */
 .wl-right { overflow-y:auto; }
 
@@ -1012,11 +1032,14 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 
 /* ═══ WORKSPACE LANDING RESPONSIVE ═══ */
 @media(max-width:860px) {
-  .workspace-landing { grid-template-columns:1fr; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-  .wl-left { border-right:none; border-bottom:1px solid var(--b1); padding:36px 28px; }
+  .workspace-landing {
+    display:flex !important; flex-direction:column !important;
+    overflow-y:auto !important; -webkit-overflow-scrolling:touch;
+  }
+  .wl-left { border-right:none; border-bottom:1px solid var(--b1); padding:32px 24px; flex-shrink:0; }
   .wl-steps { flex-direction:row; flex-wrap:wrap; gap:8px; }
-  .wl-step { flex:1; min-width:140px; }
-  .wl-right { padding:28px; overflow-y:visible; }
+  .wl-step { flex:1; min-width:130px; }
+  .wl-right { padding:24px; overflow-y:visible !important; }
   .wl-title { font-size:28px; }
   .wl-type-grid { grid-template-columns:repeat(2,1fr); }
 }
@@ -1054,22 +1077,30 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
   .home-footer { padding:32px 24px; grid-template-columns:1fr 1fr }
   .footer-brand { grid-column:1/-1 }
   .top-nav   { padding:0 20px }
-  /* Workspace landing: single column, fully scrollable on mobile */
+  /* Workspace: fully scrollable single column on mobile */
   .workspace-landing {
-    grid-template-columns:1fr;
-    overflow-y:auto;
+    display:flex !important;
+    flex-direction:column !important;
+    overflow-y:auto !important;
     -webkit-overflow-scrolling:touch;
+    height:auto !important;
+    min-height:0;
   }
   .wl-left {
     border-right:none; border-bottom:1px solid var(--b1);
-    padding:32px 20px;
+    padding:28px 20px; flex-shrink:0;
   }
   .wl-left::after { display:none; }
   .wl-steps { flex-direction:row; flex-wrap:wrap; gap:8px; }
   .wl-step { flex:1; min-width:130px; }
-  .wl-right { padding:24px 20px; overflow-y:visible; }
-  .wl-title { font-size:30px; letter-spacing:-1.2px; }
+  .wl-right {
+    padding:24px 20px;
+    overflow-y:visible !important;
+    flex:1;
+  }
+  .wl-title { font-size:28px; letter-spacing:-1.2px; }
   .wl-type-grid { grid-template-columns:repeat(2,1fr); }
+  .wl-create-btn { font-size:15px; padding:14px 20px; }
 }
 @media(max-width:640px) {
   .hero-h1       { font-size:42px; letter-spacing:-2px }

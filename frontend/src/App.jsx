@@ -74,7 +74,7 @@ export default function App() {
         <div className="wake-banner">
           <span className="wake-dot" />
           <span className="wake-text">
-            ⚡ System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
+            System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
           </span>
           <button className="wake-close" onClick={e => e.currentTarget.parentElement.style.display='none'}>✕</button>
         </div>
@@ -135,7 +135,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
+            <div className="footer-legal">© 2026 BA Copilot. All rights reserved.</div>
           </div>
         </footer>
       </div>
@@ -171,7 +171,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
+            <span className="s-dot" />{healthy ? 'system online' : 'system offline'}
           </div>
         </div>
       </nav>
