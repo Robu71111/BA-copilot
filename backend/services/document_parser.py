@@ -1,155 +1,177 @@
 """
-Document Parser Module
-======================
-Handles parsing of different document formats:
-- .txt (plain text)
-- .docx (Microsoft Word)
-- .pdf (Adobe PDF)
+Document Parser — v2
+====================
+Parses .txt / .docx / .pdf files and returns plain text.
 
-Extracts text content for further processing.
+Key fixes vs v1:
+  - Replaces PyPDF2 (abandoned) with pypdf (actively maintained)
+  - TXT: tries utf-8, falls back to latin-1, then chardet
+  - DOCX: also extracts text from tables (v1 missed them)
+  - PDF: uses pypdf PdfReader; falls back page-by-page on extraction errors
+  - All methods return empty string rather than raising on empty pages
+
+Install / requirements.txt additions:
+    pypdf>=4.0.0        (replaces PyPDF2)
+    python-docx>=1.1.0  (unchanged)
 """
 
 import io
-from docx import Document
-from PyPDF2 import PdfReader
+import logging
+
+logger = logging.getLogger(__name__)
 
 
+# ── Lazy imports so startup never crashes on missing libs ─────────────────────
+def _get_docx():
+    try:
+        from docx import Document
+        return Document
+    except ImportError:
+        raise ImportError(
+            "python-docx is not installed. Add 'python-docx>=1.1.0' to requirements.txt"
+        )
+
+
+def _get_pdf_reader():
+    # Try pypdf first (modern), fall back to PyPDF2 (old) so existing deploys keep working
+    try:
+        from pypdf import PdfReader
+        return PdfReader
+    except ImportError:
+        pass
+    try:
+        from PyPDF2 import PdfReader  # noqa: N813
+        logger.warning("Using deprecated PyPDF2 — please upgrade to pypdf>=4.0.0")
+        return PdfReader
+    except ImportError:
+        raise ImportError(
+            "No PDF library found. Add 'pypdf>=4.0.0' to requirements.txt"
+        )
+
+
+# ── Parser ────────────────────────────────────────────────────────────────────
 class DocumentParser:
-    """Parse various document formats and extract text"""
-    
+    """Parse various document formats and extract plain text."""
+
     @staticmethod
-    def parse_txt(file_content):
+    def parse_txt(file_content: bytes | str) -> str:
         """
-        Parse plain text file
-        
-        Args:
-            file_content: File bytes or string
-            
-        Returns:
-            Extracted text as string
+        Parse a plain-text file.
+        Tries UTF-8 → latin-1 → chardet as fallback encodings.
         """
+        if isinstance(file_content, str):
+            return file_content.strip()
+
+        for enc in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
+            try:
+                return file_content.decode(enc).strip()
+            except (UnicodeDecodeError, LookupError):
+                continue
+
+        # Last resort: chardet
         try:
-            if isinstance(file_content, bytes):
-                text = file_content.decode('utf-8')
-            else:
-                text = file_content
-            
-            return text.strip()
-        
-        except Exception as e:
-            raise Exception(f"Error parsing TXT file: {str(e)}")
-    
-    
+            import chardet
+            detected = chardet.detect(file_content)
+            enc = detected.get("encoding") or "utf-8"
+            return file_content.decode(enc, errors="replace").strip()
+        except Exception:
+            pass
+
+        return file_content.decode("utf-8", errors="replace").strip()
+
     @staticmethod
-    def parse_docx(file_content):
+    def parse_docx(file_content: bytes) -> str:
         """
-        Parse Microsoft Word document (.docx)
-        
-        Args:
-            file_content: File bytes from uploaded file
-            
-        Returns:
-            Extracted text as string
+        Parse a .docx file.
+        Extracts paragraphs AND table cells (v1 missed tables).
         """
-        try:
-            # Read file content
-            doc = Document(io.BytesIO(file_content))
-            
-            # Extract all paragraphs
-            full_text = []
-            for para in doc.paragraphs:
-                if para.text.strip():  # Only add non-empty paragraphs
-                    full_text.append(para.text)
-            
-            # Join paragraphs with double newline
-            text = '\n\n'.join(full_text)
-            
-            return text.strip()
-        
-        except Exception as e:
-            raise Exception(f"Error parsing DOCX file: {str(e)}")
-    
-    
+        Document = _get_docx()
+        doc = Document(io.BytesIO(file_content))
+
+        parts: list[str] = []
+
+        # Body paragraphs
+        for para in doc.paragraphs:
+            t = para.text.strip()
+            if t:
+                parts.append(t)
+
+        # Table cells — iterate all tables in the document
+        for table in doc.tables:
+            for row in table.rows:
+                row_cells = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+                if row_cells:
+                    parts.append(" | ".join(row_cells))
+
+        if not parts:
+            raise ValueError("No readable text found in the DOCX file.")
+
+        return "\n\n".join(parts).strip()
+
     @staticmethod
-    def parse_pdf(file_content):
+    def parse_pdf(file_content: bytes) -> str:
         """
-        Parse PDF document
-        
-        Args:
-            file_content: File bytes from uploaded file
-            
-        Returns:
-            Extracted text as string
+        Parse a PDF file using pypdf (or PyPDF2 as fallback).
+        Extracts text page by page; skips pages that fail individually.
         """
-        try:
-            # Create PDF reader
-            pdf_reader = PdfReader(io.BytesIO(file_content))
-            
-            # Extract text from all pages
-            full_text = []
-            for page in pdf_reader.pages:
-                text = page.extract_text()
-                if text.strip():
-                    full_text.append(text)
-            
-            # Join pages with separator
-            text = '\n\n--- Page Break ---\n\n'.join(full_text)
-            
-            return text.strip()
-        
-        except Exception as e:
-            raise Exception(f"Error parsing PDF file: {str(e)}")
-    
-    
+        PdfReader = _get_pdf_reader()
+        reader = PdfReader(io.BytesIO(file_content))
+
+        pages: list[str] = []
+        for i, page in enumerate(reader.pages):
+            try:
+                text = page.extract_text() or ""
+                text = text.strip()
+                if text:
+                    pages.append(text)
+            except Exception as exc:
+                logger.warning(f"[doc_parser] Skipping PDF page {i}: {exc}")
+                continue
+
+        if not pages:
+            raise ValueError(
+                "No readable text found in the PDF. "
+                "If it is a scanned PDF, OCR support is required."
+            )
+
+        return "\n\n--- Page Break ---\n\n".join(pages).strip()
+
     @staticmethod
-    def parse_document(file_name, file_content):
+    def parse_document(file_name: str, file_content: bytes) -> str:
         """
-        Auto-detect file type and parse accordingly
-        
-        Args:
-            file_name: Name of the uploaded file
-            file_content: File bytes
-            
-        Returns:
-            Extracted text as string
+        Auto-detect format from file extension and parse accordingly.
+        Returns extracted plain text.
         """
-        # Get file extension
-        extension = file_name.lower().split('.')[-1]
-        
-        # Parse based on extension
-        if extension == 'txt':
+        ext = file_name.lower().rsplit(".", 1)[-1]
+
+        if ext == "txt":
             return DocumentParser.parse_txt(file_content)
-        
-        elif extension == 'docx':
+        elif ext == "docx":
             return DocumentParser.parse_docx(file_content)
-        
-        elif extension == 'pdf':
+        elif ext == "pdf":
             return DocumentParser.parse_pdf(file_content)
-        
         else:
-            raise ValueError(f"Unsupported file format: .{extension}. Supported formats: .txt, .docx, .pdf")
-    
-    
+            raise ValueError(
+                f"Unsupported file format: .{ext}. "
+                "Supported formats: .txt, .docx, .pdf"
+            )
+
     @staticmethod
-    def validate_text(text, min_length=50):
+    def validate_text(text: str, min_length: int = 50) -> tuple[bool, str]:
         """
-        Validate extracted text
-        
-        Args:
-            text: Extracted text
-            min_length: Minimum required length
-            
-        Returns:
-            (is_valid, message)
+        Validate that extracted text meets minimum quality bar.
+        Returns (is_valid, message).
         """
         if not text or not text.strip():
-            return False, "No text content found in the document"
-        
-        if len(text.strip()) < min_length:
-            return False, f"Text too short (minimum {min_length} characters required)"
-        
-        return True, "Text validation successful"
+            return False, "No text content found in the document."
+        clean = text.strip()
+        if len(clean) < min_length:
+            return False, (
+                f"Document text is too short ({len(clean)} chars). "
+                f"Minimum {min_length} characters required."
+            )
+        return True, "Text validation successful."
 
 
-# Create parser instance
+# Singleton — imported by routes as `from backend.services.document_parser import parser`
 parser = DocumentParser()

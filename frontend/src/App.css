@@ -740,6 +740,84 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 .fade-in { animation:fadeUp 0.2s ease both }
 
 
+
+/* ═══ WAKE-UP BANNER ═══ */
+.wake-banner {
+  position: sticky; top: var(--topnav); z-index: 90;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 28px;
+  background: linear-gradient(90deg, rgba(26,5,162,0.18) 0%, rgba(143,1,119,0.18) 50%, rgba(222,26,88,0.12) 100%);
+  border-bottom: 1px solid rgba(143,1,119,0.25);
+  backdrop-filter: blur(12px);
+}
+.wake-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: #F67D31;
+  box-shadow: 0 0 8px #F67D31;
+  animation: blink 2s ease infinite;
+}
+.wake-text {
+  flex: 1; font-size: 13px; color: var(--t2);
+  font-family: 'Geist', sans-serif; line-height: 1.5;
+}
+.wake-text strong { color: #F67D31; font-weight: 700; }
+.wake-close {
+  background: none; border: none; color: var(--t3);
+  font-size: 14px; cursor: pointer; padding: 2px 6px;
+  border-radius: 4px; flex-shrink: 0; line-height: 1;
+  transition: color 0.14s;
+}
+.wake-close:hover { color: var(--t1); }
+
+/* ═══ SERVICE CARD HEADER ROW (icon + title side by side) ═══ */
+.svc-card-header-row {
+  display: flex; align-items: flex-start; gap: 18px; margin-bottom: 20px;
+}
+.svc-card-title-block {
+  display: flex; flex-direction: column; gap: 8px; justify-content: center;
+}
+/* Remove the old bottom margin since we moved it into the row */
+.svc-card-header-row .svc-card-icon { margin-bottom: 0; flex-shrink: 0; }
+.svc-card-header-row .svc-card-title { margin-bottom: 0; font-size: 22px; }
+.svc-card-header-row .svc-tag { align-self: flex-start; }
+
+/* ═══ CONSULTANCY CONTACT SECTION ═══ */
+.consult-contact {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.consult-contact-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  color: var(--t2); text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 14px;
+}
+.consult-contact-links {
+  display: flex; flex-wrap: wrap; gap: 14px;
+}
+.consult-contact-item {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 18px; border-radius: 10px;
+  font-size: 14px; font-weight: 500; color: var(--t2);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  transition: all 0.18s;
+  font-family: 'Geist', sans-serif;
+}
+.consult-contact-item:hover {
+  color: var(--t1);
+  background: rgba(143,1,119,0.12);
+  border-color: rgba(143,1,119,0.35);
+  transform: translateY(-1px);
+}
+.consult-linkedin:hover {
+  background: rgba(10,102,194,0.12);
+  border-color: rgba(10,102,194,0.35);
+  color: #6db3f2;
+}
+
 /* ═══ SERVICES 3-COL ON LARGE SCREENS ═══ */
 @media(min-width:1200px) {
   .svc-grid { grid-template-columns:repeat(2, 1fr) }

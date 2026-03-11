@@ -70,6 +70,13 @@ export default function App() {
     );
     return (
       <div className="home">
+        <div className="wake-banner">
+          <span className="wake-dot" />
+          <span className="wake-text">
+            ⚡ System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
+          </span>
+          <button className="wake-close" onClick={e => e.currentTarget.parentElement.style.display='none'}>✕</button>
+        </div>
         <div className="hero">
           <div className="eyebrow"><div className="eyebrow-dot" />AI-Powered Business Analysis Platform</div>
           <div className="hero-pretitle">Business Analyst Copilot</div>
@@ -127,7 +134,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot. All rights reserved.</div>
+            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
           </div>
         </footer>
       </div>
@@ -163,7 +170,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'system online' : 'system offline'}
+            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
           </div>
         </div>
       </nav>
@@ -210,7 +217,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
           ) : (
             <form className="wl-form" onSubmit={submit}>
               <div className="wl-form-title">New Project</div>
-              <input className="cf-input" placeholder="Project name (e.g. fintech app)" value={form.name}
+              <input className="cf-input" placeholder="Project name (e.g. plentycart)" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
               <select className="f-select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                 <option>Web Application</option>
@@ -352,7 +359,7 @@ function ServicesPage({ onTryIt }) {
           <div className="svc-eyebrow"><Zap size={12} />Platform Services</div>
           <h1 className="svc-h1">Everything you need<br />to <em>ship faster</em></h1>
           <p className="svc-sub">
-            A full business analysis platform powered by the best AI models.
+            A full business analysis platform powered by the best free AI models.
             Built for analysts, product managers and founders.
           </p>
         </div>
@@ -363,11 +370,15 @@ function ServicesPage({ onTryIt }) {
           {cards.map(({ icon: Icon, iconColor, iconBg, tag, tagLabel, title, featured, desc, features }) => (
             <div key={title} className={`svc-card ${featured ? 'featured' : ''} ${tag === 'coming' ? 'coming' : ''}`}>
               {featured && <div className="svc-card-glow" />}
-              <div className="svc-card-icon" style={{ background: iconBg, borderColor: 'var(--b1)' }}>
-                <Icon size={22} color={iconColor} />
+              <div className="svc-card-header-row">
+                <div className="svc-card-icon" style={{ background: iconBg, borderColor: 'var(--b1)' }}>
+                  <Icon size={22} color={iconColor} />
+                </div>
+                <div className="svc-card-title-block">
+                  <div className="svc-card-title">{title}</div>
+                  <div className={`svc-tag ${tag}`}>{tagLabel}</div>
+                </div>
               </div>
-              <div className={`svc-tag ${tag}`}>{tagLabel}</div>
-              <div className="svc-card-title">{title}</div>
               <div className="svc-card-desc">{desc}</div>
               <div className="svc-card-features">
                 {features.map(f => (
@@ -393,6 +404,24 @@ function ServicesPage({ onTryIt }) {
             </p>
             <div className="consult-pills">
               {consultPills.map(p => <span key={p} className="consult-pill">{p}</span>)}
+            </div>
+            <div className="consult-contact">
+              <div className="consult-contact-label">Contact me</div>
+              <div className="consult-contact-links">
+                <a href="mailto:vishvashukla.16@gmail.com" className="consult-contact-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  vishvashukla.16@gmail.com
+                </a>
+                <a href="https://www.linkedin.com/in/vishva-shukla" target="_blank" rel="noopener noreferrer" className="consult-contact-item consult-linkedin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                  linkedin.com/in/vishva-shukla
+                </a>
+              </div>
             </div>
           </div>
         </div>

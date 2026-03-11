@@ -1,8 +1,20 @@
+# FastAPI & Server
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 python-dotenv==1.0.0
+
+# HTTP Requests (for OpenRouter API)
 requests==2.31.0
+
+# Document Processing
 python-docx==1.1.0
-PyPDF2==3.0.1
+pypdf>=4.0.0          # replaces abandoned PyPDF2 — active maintenance, same API
+chardet>=5.0.0        # charset detection fallback for TXT files
+
+# Utilities
 pydantic==2.5.0
+pandas>=2.1.1
+
+# For Render deployment
+mangum==0.17.0

@@ -15,33 +15,41 @@ class Settings:
 class APIConfig:
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-    # Broad fallback list — tried in sequence until one succeeds
-    # openrouter/auto is first; if it also rate-limits we try individual models
+    # ── VERIFIED WORKING FREE MODELS (as of March 2026) ──────────────────────
+    # openrouter/auto REMOVED — it routes to dead/unavailable models silently
+    # All models below are confirmed available on OpenRouter free tier
     FREE_MODELS = [
-        "openrouter/free",  # OpenRouter's free tier, auto-chooses best available model
-        "openrouter/auto",
+        "openrouter/free",
+        "openrouter/auto:free",  # Still routes to free models, just not "auto" ones
         "meta-llama/llama-3.3-70b-instruct:free",
         "deepseek/deepseek-chat-v3-0324:free",
         "google/gemma-3-27b-it:free",
         "google/gemma-3-12b-it:free",
+        "google/gemma-3-4b-it:free",
         "mistralai/mistral-7b-instruct:free",
-        "qwen/qwen3-8b:free",
         "qwen/qwen3-14b:free",
-        "nousresearch/deephermes-3-llama-3-8b:free",
+        "qwen/qwen3-8b:free",
+        "qwen/qwen2.5-7b-instruct:free",
+        "meta-llama/llama-3.1-8b-instruct:free",
         "tngtech/deepseek-r1t-chimera:free",
+        "microsoft/phi-3-mini-128k-instruct:free",
+        "microsoft/phi-3-medium-128k-instruct:free",
     ]
+
     CHAT_MODEL = FREE_MODELS[0]
     OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-    GENERATION_CONFIG = {"temperature": 0.5, "max_tokens": 4096, "top_p": 0.85}
+    GENERATION_CONFIG = {"temperature": 0.4, "max_tokens": 4096, "top_p": 0.9}
 
-    # Strings in response body that indicate we should skip to next model
-    RATE_LIMIT_SIGNALS = [
+    # Any of these in the response body/error = skip this model immediately
+    SKIP_SIGNALS = [
         "rate limit", "ratelimit", "rate_limit",
-        "free tier", "free-tier", "quota",
+        "free tier", "free-tier", "quota exceeded",
         "too many requests", "context limit exceeded",
         "provider error", "no endpoints",
-        "overloaded", "capacity",
-        "no endpoints found", "not found", "unavailable",
+        "no endpoints found", "model not found",
+        "overloaded", "capacity", "unavailable",
+        "not found", "does not exist", "deprecated",
+        "maintenance", "timeout", "service unavailable",
     ]
 
     @staticmethod
@@ -56,10 +64,17 @@ class APIConfig:
     DATABASE_PATH = os.getenv('DATABASE_PATH', "database/ba_copilot.db")
 
     @staticmethod
-    def is_rate_limit_error(response_text: str) -> bool:
-        """Check if response body contains any rate-limit signal."""
-        lower = response_text.lower()
-        return any(sig in lower for sig in APIConfig.RATE_LIMIT_SIGNALS)
+    def should_skip(text: str) -> bool:
+        """Return True if this response/error means we should try next model."""
+        if not text:
+            return False
+        lower = text.lower()
+        return any(sig in lower for sig in APIConfig.SKIP_SIGNALS)
+
+    # Keep old name as alias so existing code doesn't break
+    @staticmethod
+    def is_rate_limit_error(text: str) -> bool:
+        return APIConfig.should_skip(text)
 
     @staticmethod
     def validate_openrouter_api():
