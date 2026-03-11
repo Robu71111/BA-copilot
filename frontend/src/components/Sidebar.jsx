@@ -67,7 +67,7 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
 
       <div className="sb-footer" style={{ padding: '20px', borderTop: '1px solid var(--b1)' }}>
         <div className="sb-user" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <div className="sb-avatar" style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--p1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>VS</div>
+          <div className="sb-avatar" style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--p1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>BA</div>
           <div>
             <div style={{ fontSize: '12px', fontWeight: 'bold' }}>BA Copilot</div>
             <div style={{ fontSize: '10px', color: 'var(--t3)' }}>User</div>

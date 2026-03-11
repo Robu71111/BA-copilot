@@ -163,7 +163,7 @@ export default function App() {
             </div>
           )}
           <div className={`status-pill ${healthy ? 'on' : 'off'}`}>
-            <span className="s-dot" />{healthy ? 'systems nominal' : 'offline'}
+            <span className="s-dot" />{healthy ? 'system online' : 'system offline'}
           </div>
         </div>
       </nav>
