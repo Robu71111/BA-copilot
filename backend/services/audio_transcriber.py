@@ -19,7 +19,7 @@ class AudioTranscriber:
     def __init__(self):
         """Initialize transcriber"""
         self.api_configured = True  # Always configured (uses browser API)
-        print(f"✅ Audio transcription configured (Browser Web Speech API - FREE)")
+        print(f"✅ Audio transcription configured")
     
     
     def transcribe_audio(self, audio_data, audio_format="wav"):

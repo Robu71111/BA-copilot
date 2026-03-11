@@ -210,7 +210,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
           ) : (
             <form className="wl-form" onSubmit={submit}>
               <div className="wl-form-title">New Project</div>
-              <input className="cf-input" placeholder="Project name (e.g. plentycart)" value={form.name}
+              <input className="cf-input" placeholder="Project name (e.g. fintech app)" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
               <select className="f-select" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                 <option>Web Application</option>
