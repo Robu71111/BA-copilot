@@ -73,7 +73,7 @@ export default function App() {
         <div className="wake-banner">
           <span className="wake-dot" />
           <span className="wake-text">
-            ⚡ System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
+            System may take <strong>30–60 seconds</strong> to wake up on first use — please wait, then refresh if needed.
           </span>
           <button className="wake-close" onClick={e => e.currentTarget.parentElement.style.display='none'}>✕</button>
         </div>
