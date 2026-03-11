@@ -7,7 +7,7 @@ import StoriesSection from './components/StoriesSection';
 import CriteriaSection from './components/CriteriaSection';
 import ProcessFlowSection from './components/ProcessFlowSection';
 import { healthApi, projectApi } from './services/api';
-import { Layers, FileText, Users, FlaskConical, Menu, X, ArrowRight, Zap, ChevronRight } from 'lucide-react';
+import { Layers, FileText, Users, FlaskConical, Menu, X, ArrowRight, Zap, ChevronRight, GitBranch } from 'lucide-react';
 
 export default function App() {
   const [projects, setProjects] = useState([]);
@@ -135,7 +135,7 @@ export default function App() {
               <div className="footer-status-dot" />
               {healthy ? 'All systems operational' : 'Backend offline'}
             </div>
-            <div className="footer-legal">2026 BA Copilot. All rights reserved.</div>
+            <div className="footer-legal">2026 BA Copilot Built with OpenRouter AI</div>
           </div>
         </footer>
       </div>
@@ -192,7 +192,6 @@ export default function App() {
 }
 
 function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input, setInput, reqs, setReqs, stories, setStories }) {
-  const [flow, setFlow] = React.useState(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', type: 'Web Application', industry: 'Technology' });
 
@@ -412,6 +411,13 @@ function ServicesPage({ onTryIt }) {
       title: 'Project Intelligence',
       desc: 'Advanced project type detection, industry-specific templates and smart requirement classification.',
       features: ['Industry templates', 'Auto project classification', 'Compliance checking', 'Risk assessment'],
+    },
+    {
+      icon: GitBranch, iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.1)',
+      tag: 'free', tagLabel: 'FREE',
+      title: 'Process Flow Diagram',
+      desc: 'Auto-generate Mermaid.js process flow diagrams from your user stories. Export as SVG.',
+      features: ['End-to-end user journey map', 'Decision branch visualisation', 'SVG & code export', 'Fullscreen view'],
     },
   ];
 
