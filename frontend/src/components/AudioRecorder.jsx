@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Circle, CheckCircle } from 'lucide-react';
 
 const AudioRecorder = ({ onTranscriptComplete }) => {
@@ -6,6 +6,7 @@ const AudioRecorder = ({ onTranscriptComplete }) => {
   const [transcript, setTranscript] = useState('');
   const [recognition, setRecognition] = useState(null);
   const [isSupported, setIsSupported] = useState(true);
+  const isRecordingRef = useRef(false);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -25,7 +26,7 @@ const AudioRecorder = ({ onTranscriptComplete }) => {
     };
 
     r.onerror = (e) => { if (e.error !== 'no-speech') console.error('Speech error:', e.error); };
-    r.onend = () => { if (isRecording) r.start(); };
+    r.onend = () => { if (isRecordingRef.current) r.start(); };
 
     setRecognition(r);
     return () => r.stop();
@@ -34,12 +35,14 @@ const AudioRecorder = ({ onTranscriptComplete }) => {
   const startRecording = () => {
     if (!recognition) return;
     setTranscript('');
+    isRecordingRef.current = true;
     setIsRecording(true);
     try { recognition.start(); } catch(e) { console.error(e); }
   };
 
   const stopRecording = () => {
     if (!recognition) return;
+    isRecordingRef.current = false;
     recognition.stop();
     setIsRecording(false);
     if (transcript.trim().length > 0) onTranscriptComplete(transcript.trim());
