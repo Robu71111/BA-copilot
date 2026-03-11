@@ -5,7 +5,7 @@ import LoadingOverlay from './LoadingOverlay';
 
 const pClass = (p) => { if(!p) return 'tag-low'; const l=p.toLowerCase(); if(l==='high') return 'tag-high'; if(l==='medium') return 'tag-med'; return 'tag-low'; };
 
-export default function StoriesSection({ requirements, projectType='General', onComplete }) {
+export default function StoriesSection({ requirements, projectType='General', onComplete, onReset }) {
   const [loading, setLoading] = useState(false);
   const [stories, setStories] = useState(null);
   const [error, setError] = useState(null);
