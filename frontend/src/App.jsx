@@ -329,17 +329,24 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
                 <label className="wl-label">Project Type</label>
                 <div className="wl-type-grid">
                   {[
-                    { v:'Web Application',   emoji:'🌐', hint:'Frontend + backend' },
-                    { v:'Mobile App',        emoji:'📱', hint:'iOS / Android' },
-                    { v:'API / Backend',     emoji:'⚙️',  hint:'Services & endpoints' },
-                    { v:'E-Commerce',        emoji:'🛒', hint:'Retail & payments' },
-                    { v:'Data Platform',     emoji:'📊', hint:'Analytics & pipelines' },
-                    { v:'Enterprise System', emoji:'🏢', hint:'Internal tooling' },
-                  ].map(({ v, emoji, hint }) => (
+                    { v:'Web Application',   hint:'Frontend + backend',  color:'#8F0177',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
+                    { v:'Mobile App',        hint:'iOS / Android',       color:'#DE1A58',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> },
+                    { v:'API / Backend',     hint:'Services & endpoints', color:'#1A05A2',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> },
+                    { v:'E-Commerce',        hint:'Retail & payments',   color:'#F67D31',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> },
+                    { v:'Data Platform',     hint:'Analytics & pipelines',color:'#22c55e',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> },
+                    { v:'Enterprise System', hint:'Internal tooling',    color:'#d97dbc',
+                      icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> },
+                  ].map(({ v, icon, hint, color }) => (
                     <button key={v} type="button"
                       className={`wl-type-card ${form.type === v ? 'selected' : ''}`}
-                      onClick={() => setForm({ ...form, type: v })}>
-                      <span className="wl-type-emoji">{emoji}</span>
+                      onClick={() => setForm({ ...form, type: v })}
+                      style={form.type === v ? {'--card-color': color} : {}}>
+                      <span className="wl-type-icon" style={{color: form.type===v ? color : 'var(--t2)'}}>{icon}</span>
                       <span className="wl-type-name">{v}</span>
                       <span className="wl-type-hint">{hint}</span>
                     </button>
@@ -372,9 +379,9 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
   return (
     <div className="workflow">
       <div className="workflow-inner">
-        <InputSection projectId={current.id || current.project_id} onComplete={setInput} />
-        {input && <RequirementsSection inputId={input.input_id} onComplete={setReqs} />}
-        {reqs && <StoriesSection requirements={reqs} onComplete={setStories} />}
+        <InputSection projectId={current.id || current.project_id} onComplete={(v) => { setInput(v); setReqs(null); setStories(null); }} />
+        {input && <RequirementsSection inputId={input.input_id} onComplete={setReqs} onReset={() => { setReqs(null); setStories(null); }} />}
+        {reqs && <StoriesSection requirements={reqs} onComplete={setStories} onReset={() => setStories(null)} />}
         {stories && <CriteriaSection userStories={stories} />}
         {stories && <ProcessFlowSection userStories={stories} projectName={current?.project_name || current?.name || 'System'} />}
       </div>
@@ -406,18 +413,18 @@ function ServicesPage({ onTryIt }) {
       features: ['Gherkin BDD format', 'Multiple scenarios per story', 'Edge case coverage', 'QA-ready output'],
     },
     {
-      icon: Layers, iconColor: '#F67D31', iconBg: 'rgba(246,125,49,0.1)',
-      tag: 'coming', tagLabel: 'COMING SOON',
-      title: 'Project Intelligence',
-      desc: 'Advanced project type detection, industry-specific templates and smart requirement classification.',
-      features: ['Industry templates', 'Auto project classification', 'Compliance checking', 'Risk assessment'],
-    },
-    {
       icon: GitBranch, iconColor: '#22c55e', iconBg: 'rgba(34,197,94,0.1)',
       tag: 'free', tagLabel: 'FREE',
       title: 'Process Flow Diagram',
       desc: 'Auto-generate Mermaid.js process flow diagrams from your user stories. Export as SVG.',
       features: ['End-to-end user journey map', 'Decision branch visualisation', 'SVG & code export', 'Fullscreen view'],
+    },
+    {
+      icon: Layers, iconColor: '#F67D31', iconBg: 'rgba(246,125,49,0.1)',
+      tag: 'coming', tagLabel: 'COMING SOON',
+      title: 'Project Intelligence',
+      desc: 'Advanced project type detection, industry-specific templates and smart requirement classification.',
+      features: ['Industry templates', 'Auto project classification', 'Compliance checking', 'Risk assessment'],
     },
   ];
 

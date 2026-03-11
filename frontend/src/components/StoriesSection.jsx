@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { storiesApi } from '../services/api';
-import { BookOpen, Table, Download, CheckCircle, AlertTriangle, Flag, Hash, GitBranch, StickyNote } from 'lucide-react';
+import { RefreshCw,  storiesApi } from '../services/api';
+import { RefreshCw,  BookOpen, Table, Download, CheckCircle, AlertTriangle, Flag, Hash, GitBranch, StickyNote } from 'lucide-react';
 import LoadingOverlay from './LoadingOverlay';
 
 const pClass = (p) => { if(!p) return 'tag-low'; const l=p.toLowerCase(); if(l==='high') return 'tag-high'; if(l==='medium') return 'tag-med'; return 'tag-low'; };
@@ -9,6 +9,11 @@ export default function StoriesSection({ requirements, projectType='General', on
   const [loading, setLoading] = useState(false);
   const [stories, setStories] = useState(null);
   const [error, setError] = useState(null);
+
+  const regenerate = () => {
+    setStories(null); setError(null);
+    if (onReset) onReset();
+  };
 
   const generate = async () => {
     setLoading(true); setError(null);
@@ -77,6 +82,7 @@ export default function StoriesSection({ requirements, projectType='General', on
                 <div className="a-right">
                   <button className="btn btn-secondary btn-sm" onClick={exportJira}><Table size={11}/> JIRA CSV</button>
                   <button className="btn btn-secondary btn-sm" onClick={exportMd}><Download size={11}/> Markdown</button>
+                  <button className="btn btn-secondary btn-sm" onClick={regenerate} title="Regenerate stories"><RefreshCw size={11}/> Regenerate</button>
                 </div>
               </div>
               {stories.stories.map((s,i) => (

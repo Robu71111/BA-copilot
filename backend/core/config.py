@@ -19,21 +19,8 @@ class APIConfig:
     # openrouter/auto REMOVED — it routes to dead/unavailable models silently
     # All models below are confirmed available on OpenRouter free tier
     FREE_MODELS = [
-        "openrouter/free",
-        "openrouter/auto:free",  # Still routes to free models, just not "auto" ones
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "deepseek/deepseek-chat-v3-0324:free",
-        "google/gemma-3-27b-it:free",
-        "google/gemma-3-12b-it:free",
-        "google/gemma-3-4b-it:free",
-        "mistralai/mistral-7b-instruct:free",
-        "qwen/qwen3-14b:free",
-        "qwen/qwen3-8b:free",
-        "qwen/qwen2.5-7b-instruct:free",
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "tngtech/deepseek-r1t-chimera:free",
-        "microsoft/phi-3-mini-128k-instruct:free",
-        "microsoft/phi-3-medium-128k-instruct:free",
+        "openrouter/auto:free",
+        "openrouter/free"
     ]
 
     CHAT_MODEL = FREE_MODELS[0]

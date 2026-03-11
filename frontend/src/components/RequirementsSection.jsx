@@ -3,7 +3,7 @@ import { requirementsApi } from '../services/api';
 import { ScanText, Download, CheckCircle, AlertTriangle, ListChecks, Settings2 } from 'lucide-react';
 import LoadingOverlay from './LoadingOverlay';
 
-export default function RequirementsSection({ inputId, projectType='General', industry='General', onComplete }) {
+export default function RequirementsSection({ inputId, projectType='General', industry='General', onComplete, onReset }) {
   const [loading, setLoading] = useState(false);
   const [reqs, setReqs] = useState(null);
   const [error, setError] = useState(null);
@@ -16,6 +16,11 @@ export default function RequirementsSection({ inputId, projectType='General', in
       setReqs(enriched); onComplete(enriched);
     } catch(e) { setError(e.message); }
     finally { setLoading(false); }
+  };
+
+  const regenerate = () => {
+    setReqs(null); setError(null);
+    if (onReset) onReset();
   };
 
   const downloadMd = () => {
@@ -68,6 +73,10 @@ export default function RequirementsSection({ inputId, projectType='General', in
                 <span className="chip chip-g"><Settings2 size={10}/> {reqs.non_functional.length} non-functional</span>
                 <button className="btn btn-secondary btn-sm" onClick={downloadMd} style={{marginLeft:'auto'}}>
                   <Download size={11}/> Export .md
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={regenerate}
+                  title="Clear and regenerate requirements">
+                  <Settings2 size={11}/> Regenerate
                 </button>
               </div>
               {reqs.functional.length > 0 && <>
