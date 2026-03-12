@@ -322,7 +322,7 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
               </div>
               <div className="wl-field">
                 <label className="wl-label">Project Name</label>
-                <input className="cf-input" placeholder="e.g. Plentycart, AuthService, DataPipeline"
+                <input className="cf-input" placeholder="e.g. Fintech, AuthService, DataPipeline"
                   value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required autoFocus />
               </div>
               <div className="wl-field">

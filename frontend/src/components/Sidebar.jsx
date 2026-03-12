@@ -27,10 +27,6 @@ export default function Sidebar({ projects=[], selected, onSelect, onCreate, onD
           <div className="nav-icon"><Layers size={12} /></div>
           <span className="nav-label-text">Services</span>
         </div>
-        <div className={`nav-item ${currentPage === 'services' ? 'active' : ''}`} onClick={() => onNav('services')}>
-          <div className="nav-icon"><Layers size={12} /></div>
-          <span className="nav-label-text">Services</span>
-        </div>
 
         {/* Workspace — prominent CTA */}
         <button
