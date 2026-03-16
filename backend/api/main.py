@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import sys
+import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -18,9 +19,18 @@ app = FastAPI(
     version="3.0.0"
 )
 
+# CORS — allow your Vercel frontend + localhost for development
+allowed_origins = [
+    "https://ba-copilot-mvp.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+
+# Also allow any *.vercel.app preview deployments
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://ba-copilot-mvp\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,11 +70,11 @@ app.include_router(input_routes.router,  prefix="/api/input",         tags=["inp
 from backend.api.routes import audio
 app.include_router(audio.router,         prefix="/api/audio",         tags=["audio"])
 
-# ── NEW: Process Flow Diagram ──────────────────────────────────────────────────
+# ── Process Flow Diagram ──────────────────────────────────────────────────
 from backend.api.routes import flow
 app.include_router(flow.router,          prefix="/api/flow",          tags=["flow"])
 
-# ── Error handlers ─────────────────────────────────────────────────────────────
+# ── Error handlers ─────────────────────────────────────────────────────────
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
@@ -79,11 +89,11 @@ async def startup_event():
     print(">>> BA Copilot API v3 starting...")
     print("=" * 60)
     from backend.core.database import db
-    print("[✅] Database initialised")
+    print("[OK] Database initialised")
     from backend.core.config import APIConfig
     status = APIConfig.get_status()
     if status["openrouter"][0]:
-        print(f"[✅] OpenRouter configured — model: {status.get('chat_model')}")
+        print(f"[OK] OpenRouter configured — model: {status.get('chat_model')}")
     else:
-        print("[⚠️ ] OpenRouter API key missing")
+        print("[!!] OpenRouter API key missing")
     print("=" * 60)

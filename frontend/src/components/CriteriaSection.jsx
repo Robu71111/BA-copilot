@@ -36,7 +36,6 @@ export default function CriteriaSection({ userStories }) {
       <div className="card-stripe"/>
       <div className="card-body">
 
-        {/* Header */}
         <div className="card-head">
           <div className={`step-badge ${criteria ? 'sb-green' : 'sb-amber'}`}>
             {criteria ? <CheckCircle size={15}/> : <FlaskConical size={15}/>}
@@ -57,7 +56,6 @@ export default function CriteriaSection({ userStories }) {
           </div>
         </div>
 
-        {/* Error */}
         {error && (
           <div className="notice err" style={{marginBottom:16}}>
             <AlertTriangle size={14} style={{flexShrink:0, marginTop:2, color:'var(--rose)'}}/>
@@ -65,7 +63,6 @@ export default function CriteriaSection({ userStories }) {
           </div>
         )}
 
-        {/* Story selector */}
         <div style={{marginBottom:16}}>
           <label style={{
             display:'block', fontSize:14, fontWeight:600,
@@ -95,7 +92,6 @@ export default function CriteriaSection({ userStories }) {
           </div>
         </div>
 
-        {/* Selected story preview */}
         {selectedStory && (
           <div style={{
             background:'var(--s2)', border:'1px solid var(--b1)',
@@ -111,12 +107,11 @@ export default function CriteriaSection({ userStories }) {
           </div>
         )}
 
-        {/* Generate button */}
         <button
           className="btn btn-primary"
           onClick={generate}
           disabled={loading || selectedIdx === ''}
-          style={{fontSize:15, padding:'12px 28px', marginBottom: loading ? 0 : 0}}
+          style={{fontSize:15, padding:'12px 28px'}}
         >
           <FlaskConical size={14}/>
           {loading ? 'Generating Scenarios...' : 'Generate Acceptance Criteria →'}
@@ -129,7 +124,6 @@ export default function CriteriaSection({ userStories }) {
           </div>
         )}
 
-        {/* Results */}
         {criteria?.criteria?.length > 0 && (
           <div style={{marginTop:24}}>
             <div className="group-title" style={{marginTop:0}}>

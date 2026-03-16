@@ -28,6 +28,7 @@ export default function StoriesSection({ requirements, projectType='General', on
 
   const exportJira = async () => {
     try {
+      // Pass the stories data correctly — storiesApi.exportJira handles the shape
       const r = await storiesApi.exportJira(stories);
       const url = URL.createObjectURL(new Blob([r.csv],{type:'text/csv'}));
       Object.assign(document.createElement('a'),{href:url,download:'jira_import.csv'}).click();

@@ -31,6 +31,14 @@ const STEPS = {
     { label: 'Formatting Gherkin', detail: 'Given / When / Then structure...' },
     { label: 'Finalising', detail: 'Validating BDD scenarios...' },
   ],
+  flow: [
+    { label: 'Connecting to AI', detail: 'Selecting best available model...' },
+    { label: 'Analysing user stories', detail: 'Mapping story dependencies...' },
+    { label: 'Building process map', detail: 'Creating nodes and decision branches...' },
+    { label: 'Generating Mermaid syntax', detail: 'Writing flowchart TD diagram code...' },
+    { label: 'Validating diagram', detail: 'Checking node connections...' },
+    { label: 'Finalising', detail: 'Preparing diagram for rendering...' },
+  ],
 };
 
 const ICONS = {
@@ -55,6 +63,12 @@ const ICONS = {
       <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
     </svg>
   ),
+  flow: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+      <path d="M18 9a9 9 0 01-9 9"/>
+    </svg>
+  ),
 };
 
 const TITLES = {
@@ -62,6 +76,7 @@ const TITLES = {
   stories: 'Generating User Stories',
   criteria: 'Generating Acceptance Criteria',
   input: 'Processing Input',
+  flow: 'Generating Process Flow',
 };
 
 const COLORS = {
@@ -69,6 +84,7 @@ const COLORS = {
   stories:      { from: '#1A05A2', to: '#8F0177' },
   criteria:     { from: '#DE1A58', to: '#F67D31' },
   input:        { from: '#1A05A2', to: '#DE1A58' },
+  flow:         { from: '#22c55e', to: '#1A05A2' },
 };
 
 export default function LoadingOverlay({ type = 'requirements', visible }) {
@@ -81,18 +97,15 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
   useEffect(() => {
     if (!visible) { setCurrentStep(0); setElapsed(0); return; }
 
-    // Step progression — advance every ~8s spread across 50s total
     const stepInterval = Math.floor(50000 / steps.length);
     const stepTimer = setInterval(() => {
       setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
     }, stepInterval);
 
-    // Animated dots
     const dotsTimer = setInterval(() => {
       setDots(d => d.length >= 3 ? '' : d + '.');
     }, 500);
 
-    // Elapsed seconds
     const elapsedTimer = setInterval(() => {
       setElapsed(e => e + 1);
     }, 1000);
@@ -127,7 +140,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
         @keyframes orbitC { 0%{transform:rotate(240deg) translateX(52px) rotate(-240deg)} 100%{transform:rotate(600deg) translateX(52px) rotate(-600deg)} }
       `}</style>
 
-      {/* Ambient glow blobs */}
       <div style={{
         position:'absolute', width:500, height:500, borderRadius:'50%',
         background:`radial-gradient(circle, ${color.from}22 0%, transparent 70%)`,
@@ -139,35 +151,31 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
         bottom:'15%', right:'15%', pointerEvents:'none',
       }}/>
 
-      {/* Card */}
       <div style={{
         background: 'rgba(12,12,26,0.95)',
         border: '1px solid rgba(255,255,255,0.08)',
         borderRadius: 24,
-        padding: '48px 52px',
+        padding: '40px 44px',
         width: '100%', maxWidth: 480,
+        margin: '0 16px',
         position: 'relative', overflow: 'hidden',
         boxShadow: `0 0 0 1px rgba(255,255,255,0.04) inset, 0 40px 80px rgba(0,0,0,0.6), 0 0 60px ${color.from}18`,
         animation: 'floatUp 0.3s ease',
       }}>
 
-        {/* Subtle grid bg */}
         <div style={{
           position:'absolute', inset:0, pointerEvents:'none', borderRadius:24, overflow:'hidden',
           backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px)',
           backgroundSize:'32px 32px',
         }}/>
 
-        {/* Top gradient stripe */}
         <div style={{
           position:'absolute', top:0, left:0, right:0, height:2,
           background:`linear-gradient(90deg, transparent 0%, ${color.from} 30%, ${color.to} 70%, transparent 100%)`,
           borderRadius:'24px 24px 0 0',
         }}/>
 
-        {/* Orbit animation */}
-        <div style={{position:'relative', width:100, height:100, margin:'0 auto 32px', flexShrink:0}}>
-          {/* Center icon */}
+        <div style={{position:'relative', width:100, height:100, margin:'0 auto 28px', flexShrink:0}}>
           <div style={{
             position:'absolute', top:'50%', left:'50%',
             transform:'translate(-50%,-50%)',
@@ -178,9 +186,8 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
             boxShadow:`0 0 30px ${color.from}60, 0 0 60px ${color.from}20`,
             animation:'pulse 2s ease infinite',
           }}>
-            {ICONS[type]}
+            {ICONS[type] || ICONS.requirements}
           </div>
-          {/* Orbit dots */}
           {[{ anim:'orbitA', size:6, color:color.from },
             { anim:'orbitB', size:5, color:color.to },
             { anim:'orbitC', size:4, color:'#F67D31' }
@@ -194,23 +201,21 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
           ))}
         </div>
 
-        {/* Title */}
         <div style={{textAlign:'center', marginBottom:8}}>
           <div style={{
-            fontSize:22, fontWeight:800, color:'#f4f4ff',
+            fontSize:20, fontWeight:800, color:'#f4f4ff',
             letterSpacing:'-0.5px', fontFamily:'Geist,sans-serif',
           }}>
-            {TITLES[type]}{dots}
+            {TITLES[type] || TITLES.requirements}{dots}
           </div>
           <div style={{
             fontSize:13, color:'rgba(180,180,215,0.9)',
             fontFamily:'Geist Mono,monospace', marginTop:6,
           }}>
-            {elapsed}s elapsed,This can take upto 120s for large inputs
+            {elapsed}s elapsed — this can take up to 120s for large inputs
           </div>
         </div>
 
-        {/* Progress bar */}
         <div style={{
           height:4, background:'rgba(255,255,255,0.06)',
           borderRadius:4, overflow:'hidden', margin:'24px 0 20px', position:'relative',
@@ -222,7 +227,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
             transition:'width 0.8s cubic-bezier(0.4,0,0.2,1)',
             position:'relative', overflow:'hidden',
           }}>
-            {/* Shimmer on the bar */}
             <div style={{
               position:'absolute', top:0, bottom:0, width:'60%',
               background:'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
@@ -231,7 +235,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
           </div>
         </div>
 
-        {/* Steps list */}
         <div style={{display:'flex', flexDirection:'column', gap:10}}>
           {steps.map((step, i) => {
             const done = i < currentStep;
@@ -244,7 +247,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
                 transition:'opacity 0.4s ease',
                 animation: active ? 'floatUp 0.3s ease' : 'none',
               }}>
-                {/* Step indicator */}
                 <div style={{
                   width:22, height:22, borderRadius:'50%', flexShrink:0,
                   display:'flex', alignItems:'center', justifyContent:'center',
@@ -274,7 +276,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
                   )}
                 </div>
 
-                {/* Label + detail */}
                 <div style={{flex:1, minWidth:0}}>
                   <div style={{
                     fontSize:13, fontWeight: active ? 700 : 500,
@@ -295,7 +296,6 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
                   )}
                 </div>
 
-                {/* Right indicator */}
                 {active && (
                   <div style={{
                     width:16, height:16, borderRadius:'50%', flexShrink:0,
@@ -317,9 +317,8 @@ export default function LoadingOverlay({ type = 'requirements', visible }) {
           })}
         </div>
 
-        {/* Bottom hint */}
         <div style={{
-          marginTop:28, paddingTop:20,
+          marginTop:24, paddingTop:18,
           borderTop:'1px solid rgba(255,255,255,0.05)',
           textAlign:'center',
           fontSize:14, color:'rgba(160,160,200,0.9)',

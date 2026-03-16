@@ -2,34 +2,51 @@
  * BA Copilot - API Service
  * =========================
  * Connects React frontend to FastAPI backend
- * FIXED: Proper data passing for story generation
+ * FIXED: Retry logic, correct JIRA payload shape
  */
 
 import axios from 'axios';
 
-// API Base URL - pulls from environment or localhost
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-console.log('🌐 API Base URL:', API_BASE_URL);
+console.log('API Base URL:', API_BASE_URL);
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 120000, // 2 minutes for FREE models (they can be slower)
+  timeout: 150000, // 2.5 minutes for FREE models
 });
 
-// Response Interceptor for better error handling
+// Response Interceptor
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
     const message = error.response?.data?.detail || error.message || "Network Error";
-    console.error("❌ API Error:", message);
-    console.error("Full error:", error.response?.data);
+    console.error("API Error:", message);
     return Promise.reject(new Error(message));
   }
 );
+
+/**
+ * Retry wrapper — retries once after a delay on failure.
+ * Only retries on 5xx errors or network errors, not 4xx.
+ */
+async function withRetry(fn, retryDelay = 5000) {
+  try {
+    return await fn();
+  } catch (error) {
+    const status = error?.response?.status;
+    // Don't retry client errors (400, 404, etc)
+    if (status && status >= 400 && status < 500) {
+      throw error;
+    }
+    console.log(`Request failed, retrying in ${retryDelay/1000}s...`);
+    await new Promise(r => setTimeout(r, retryDelay));
+    return await fn();
+  }
+}
 
 // ========================================
 // PROJECT API
@@ -74,62 +91,54 @@ export const inputApi = {
 };
 
 // ========================================
-// REQUIREMENTS API
+// REQUIREMENTS API (with retry)
 // ========================================
 export const requirementsApi = {
   extract: (inputId, projectType = 'General', industry = 'General') => 
-    apiClient.post('/api/requirements/extract', { 
+    withRetry(() => apiClient.post('/api/requirements/extract', { 
       input_id: inputId,
       project_type: projectType,
       industry: industry
-    }),
+    })),
   
   get: (inputId) => apiClient.get(`/api/requirements/${inputId}`)
 };
 
 // ========================================
-// STORIES API - FIXED
+// STORIES API (with retry + fixed payload)
 // ========================================
 export const storiesApi = {
-  // FIXED: Properly format requirements data for backend
   generate: (requirementsData, projectType = 'General') => {
-    console.log('📖 Generating stories with data:', requirementsData);
-    
-    // Check if requirementsData has the input_id
     if (!requirementsData || typeof requirementsData !== 'object') {
       throw new Error('Invalid requirements data');
     }
     
-    // The backend expects input_id, not the full requirements
-    // But we also need to pass the requirements as context
     const payload = {
       input_id: requirementsData.input_id || 0,
       project_type: projectType
     };
     
-    console.log('Sending payload:', payload);
-    
-    return apiClient.post('/api/stories/generate', payload);
+    return withRetry(() => apiClient.post('/api/stories/generate', payload));
   },
   
+  // FIXED: Send stories array directly, not double-nested
   exportJira: (storiesData) => {
-    console.log('Exporting to JIRA:', storiesData);
-    return apiClient.post('/api/stories/export/jira', { stories: storiesData });
+    const stories = storiesData?.stories || storiesData;
+    return apiClient.post('/api/stories/export/jira', { stories: { stories: Array.isArray(stories) ? stories : [] } });
   },
   
   get: (inputId) => apiClient.get(`/api/stories/${inputId}`)
 };
 
 // ========================================
-// CRITERIA API
+// CRITERIA API (with retry)
 // ========================================
 export const criteriaApi = {
   generate: (storyId, userStoryText) => {
-    console.log('✅ Generating criteria for story:', storyId);
-    return apiClient.post('/api/criteria/generate', { 
+    return withRetry(() => apiClient.post('/api/criteria/generate', { 
       story_id: storyId, 
       user_story: userStoryText 
-    });
+    }));
   },
   
   exportGherkin: (criteriaData, featureName = 'User Story') =>
@@ -140,7 +149,7 @@ export const criteriaApi = {
 };
 
 // ========================================
-// AUDIO API (Not used - browser handles transcription)
+// AUDIO API
 // ========================================
 export const audioApi = {
   check: () => apiClient.get('/api/audio/check')

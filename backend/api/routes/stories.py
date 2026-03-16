@@ -1,4 +1,4 @@
-"""User stories generation routes - FIXED for proper data handling"""
+"""User stories generation routes — async + fixed JIRA export"""
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -17,12 +17,10 @@ class StoriesGenerate(BaseModel):
 
 @router.post("/generate")
 async def generate_stories(data: StoriesGenerate):
-    """Generate user stories from requirements with better error handling"""
+    """Generate user stories from requirements"""
     try:
-        print(f"📖 Generating stories for input_id: {data.input_id}")
-        print(f"   Project type: {data.project_type}")
+        print(f"Generating stories for input_id: {data.input_id}")
         
-        # Get requirements from database
         requirements = db.get_requirements(data.input_id)
         
         if not requirements:
@@ -33,21 +31,16 @@ async def generate_stories(data: StoriesGenerate):
         
         print(f"   Found {len(requirements)} requirements")
         
-        # Format requirements text for the AI
         req_text = "## Requirements\n\n"
         for req in requirements:
-            # req structure: (req_id, req_code, req_type, description)
             req_code = req[1]
             req_type = req[2]
             description = req[3]
             req_text += f"**{req_code}** ({req_type}): {description}\n\n"
         
-        print(f"   Formatted requirements: {len(req_text)} characters")
-        
-        # Generate stories using AI
         try:
-            stories = story_gen.generate(req_text, data.project_type)
-            print(f"✅ Generated {stories['total_count']} user stories")
+            stories = await story_gen.generate(req_text, data.project_type)
+            print(f"Generated {stories['total_count']} user stories")
             
             if stories['total_count'] == 0:
                 raise Exception("AI returned no stories. The response may be empty or incorrectly formatted.")
@@ -55,7 +48,7 @@ async def generate_stories(data: StoriesGenerate):
             return stories
             
         except Exception as gen_error:
-            print(f"❌ Story generation error: {str(gen_error)}")
+            print(f"Story generation error: {str(gen_error)}")
             import traceback
             traceback.print_exc()
             
@@ -67,29 +60,38 @@ async def generate_stories(data: StoriesGenerate):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ Unexpected error in generate_stories: {str(e)}")
+        print(f"Unexpected error in generate_stories: {str(e)}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{input_id}")
 async def get_stories(input_id: int):
-    """Get saved user stories (if you implement database storage)"""
-    # TODO: Implement database retrieval of stories
     return {"stories": [], "message": "Story retrieval not yet implemented"}
 
 @router.post("/export/jira")
 async def export_jira(data: dict):
-    """Export user stories to JIRA CSV format"""
+    """Export user stories to JIRA CSV format.
+    Accepts either { stories: { stories: [...] } } or { stories: [...] }
+    to handle both old and new frontend payload shapes.
+    """
     try:
         stories_data = data.get('stories', {})
         
-        if not stories_data or 'stories' not in stories_data:
-            raise HTTPException(status_code=400, detail="Invalid stories data")
+        # Handle both shapes: { stories: [...] } and [...] directly
+        if isinstance(stories_data, list):
+            stories_data = {'stories': stories_data}
+        elif isinstance(stories_data, dict) and 'stories' not in stories_data:
+            raise HTTPException(status_code=400, detail="Invalid stories data — missing 'stories' array")
+        
+        if not stories_data or not stories_data.get('stories'):
+            raise HTTPException(status_code=400, detail="No stories found in request")
         
         csv = story_gen.format_for_jira(stories_data)
         return {"csv": csv}
         
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"❌ JIRA export error: {str(e)}")
+        print(f"JIRA export error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

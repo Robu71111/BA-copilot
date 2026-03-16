@@ -19,7 +19,6 @@ class RequirementsExtract(BaseModel):
 @router.post("/extract")
 async def extract_requirements(data: RequirementsExtract):
     try:
-        # Get input text
         conn = db._get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT raw_text FROM inputs WHERE input_id = ?", (data.input_id,))
@@ -34,9 +33,8 @@ async def extract_requirements(data: RequirementsExtract):
         print(f"Extracting requirements for input_id: {data.input_id}")
         print(f"Text length: {len(raw_text)}")
         
-        # Extract requirements
         try:
-            requirements = extractor.extract(raw_text, data.project_type, data.industry)
+            requirements = await extractor.extract(raw_text, data.project_type, data.industry)
             print(f"Extracted {requirements['total_count']} requirements")
         except Exception as extract_error:
             print(f"Extraction failed: {str(extract_error)}")
@@ -44,7 +42,6 @@ async def extract_requirements(data: RequirementsExtract):
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=f"Requirements extraction error: {str(extract_error)}")
         
-        # Save to database
         try:
             all_reqs = requirements['functional'] + requirements['non_functional']
             if all_reqs:
@@ -52,7 +49,6 @@ async def extract_requirements(data: RequirementsExtract):
                 print(f"Saved {len(all_reqs)} requirements to database")
         except Exception as db_error:
             print(f"Database save error: {str(db_error)}")
-            # Continue even if saving fails
         
         return requirements
     

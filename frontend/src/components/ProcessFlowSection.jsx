@@ -52,7 +52,6 @@ async function renderMermaid(code, container) {
   const id = 'mermaid-' + Date.now();
   const { svg } = await window.mermaid.render(id, code);
   container.innerHTML = svg;
-  // Make SVG responsive
   const svgEl = container.querySelector('svg');
   if (svgEl) {
     svgEl.style.width = '100%';
@@ -68,13 +67,12 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
   const [error, setError] = useState(null);
   const [renderError, setRenderError] = useState(null);
   const [fullscreen, setFullscreen] = useState(false);
-  const [view, setView] = useState('diagram'); // 'diagram' | 'code'
+  const [view, setView] = useState('diagram');
   const diagramRef = useRef(null);
   const fullRef = useRef(null);
   const mermaidReady = useMermaid();
   const stories = userStories?.stories || [];
 
-  // Render whenever code or mermaid becomes ready
   useEffect(() => {
     if (!code || !mermaidReady) return;
     setRenderError(null);
@@ -111,13 +109,12 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
 
   return (
     <>
-      <LoadingOverlay type="stories" visible={loading} />
+      <LoadingOverlay type="flow" visible={loading} />
 
       <div className={`card ${code ? 'c-done' : 'c-active'}`}>
         <div className="card-stripe"/>
         <div className="card-body">
 
-          {/* Header */}
           <div className="card-head">
             <div className={`step-badge ${code ? 'sb-green' : 'sb-amber'}`}>
               {code ? <CheckCircle size={15}/> : <GitBranch size={15}/>}
@@ -140,7 +137,6 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
             </div>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="notice err" style={{marginBottom:16}}>
               <AlertTriangle size={14} style={{flexShrink:0, marginTop:2, color:'var(--rose)'}}/>
@@ -154,7 +150,6 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
             </div>
           )}
 
-          {/* Generate button */}
           {!code && (
             <button className="btn btn-primary" onClick={generate} disabled={loading}
               style={{fontSize:15, padding:'12px 28px'}}>
@@ -162,19 +157,10 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
             </button>
           )}
 
-          {/* Diagram area */}
           {code && (
             <div>
-              {/* Toolbar */}
-              <div style={{
-                display:'flex', alignItems:'center', gap:10, marginBottom:16,
-                flexWrap:'wrap',
-              }}>
-                {/* View toggle */}
-                <div style={{
-                  display:'flex', gap:2, padding:4,
-                  background:'var(--s2)', border:'1px solid var(--b1)', borderRadius:10,
-                }}>
+              <div className="flow-toolbar">
+                <div className="flow-toggle">
                   {[['diagram','Diagram'],['code','Mermaid Code']].map(([v,label]) => (
                     <button key={v} onClick={() => setView(v)} style={{
                       padding:'6px 14px', borderRadius:7, border:'none', cursor:'pointer',
@@ -186,7 +172,7 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
                   ))}
                 </div>
 
-                <div style={{marginLeft:'auto', display:'flex', gap:8}}>
+                <div className="flow-actions">
                   <button className="btn btn-secondary btn-sm" onClick={generate}>
                     <RefreshCw size={12}/> Regenerate
                   </button>
@@ -203,7 +189,6 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
                 </div>
               </div>
 
-              {/* Diagram view */}
               {view === 'diagram' && (
                 <div style={{
                   background:'var(--s2)', border:'1px solid var(--b1)',
@@ -222,7 +207,6 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
                 </div>
               )}
 
-              {/* Code view */}
               {view === 'code' && (
                 <div style={{
                   background:'var(--s2)', border:'1px solid var(--b1)',
@@ -241,7 +225,6 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
         </div>
       </div>
 
-      {/* Fullscreen modal */}
       {fullscreen && (
         <div style={{
           position:'fixed', inset:0, zIndex:9998,
@@ -252,7 +235,7 @@ export default function ProcessFlowSection({ userStories, projectName = 'System'
         }}>
           <div style={{
             display:'flex', alignItems:'center', justifyContent:'space-between',
-            marginBottom:20, flexShrink:0,
+            marginBottom:20, flexShrink:0, flexWrap:'wrap', gap:10,
           }}>
             <div style={{fontSize:18, fontWeight:800, color:'var(--t1)', letterSpacing:'-0.5px'}}>
               {projectName} — Process Flow

@@ -164,7 +164,7 @@ export default function App() {
         </div>
         <div className="tn-right">
           {page === 'workspace' && projectName && (
-            <div className="breadcrumb">
+            <div className="breadcrumb" style={{minWidth:0, flex:'0 1 auto'}}>
               <span className="bc-root">workspace</span>
               <span className="bc-sep">/</span>
               <span className="bc-cur">{projectName}</span>

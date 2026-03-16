@@ -1,9 +1,8 @@
 """
-Requirements Extractor — robust multi-model fallback.
-Handles both HTTP 429 AND rate-limit messages in 200-OK responses.
+Requirements Extractor — robust multi-model fallback with async HTTP.
 """
-import requests
-import time
+import httpx
+import asyncio
 from backend.core.config import APIConfig
 from utils.prompts import PromptTemplates
 import re
@@ -13,88 +12,85 @@ class RequirementsExtractor:
     def __init__(self):
         self.api_configured = bool(APIConfig.OPENROUTER_API_KEY)
 
-    def _call_model(self, model, prompt):
+    async def _call_model(self, client, model, prompt):
         payload = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             **APIConfig.GENERATION_CONFIG
         }
-        return requests.post(
+        return await client.post(
             f"{APIConfig.OPENROUTER_BASE_URL}/chat/completions",
             headers=APIConfig.get_headers(),
             json=payload,
             timeout=120
         )
 
-    def extract(self, raw_text, project_type="General", industry="General"):
+    async def extract(self, raw_text, project_type="General", industry="General"):
         if not self.api_configured:
             raise Exception("OpenRouter API key not configured.")
 
         prompt = PromptTemplates.requirements_extractor(raw_text, project_type, industry)
         last_error = "Unknown error"
 
-        for model in APIConfig.FREE_MODELS:
-            try:
-                print(f"Trying model: {model}")
-                response = self._call_model(model, prompt)
-                body = response.text
+        async with httpx.AsyncClient() as client:
+            for model in APIConfig.FREE_MODELS:
+                try:
+                    print(f"Trying model: {model}")
+                    response = await self._call_model(client, model, prompt)
+                    body = response.text
 
-                # Handle HTTP-level rate limit
-                if response.status_code in (429, 404, 503):
-                    print(f"HTTP 429 on {model}, trying next...")
-                    time.sleep(1)
-                    continue
-
-                # Handle rate-limit signals INSIDE a 200 response (OpenRouter quirk)
-                if APIConfig.is_rate_limit_error(body):
-                    print(f"Body rate-limit signal on {model}: {body[:120]}")
-                    time.sleep(1)
-                    continue
-
-                if response.status_code != 200:
-                    last_error = f"HTTP {response.status_code}: {body[:200]}"
-                    print(f"Error on {model}: {last_error}")
-                    continue
-
-                data = response.json()
-
-                # Some models return an error object inside choices
-                if 'error' in data:
-                    err_msg = str(data['error'])
-                    if APIConfig.is_rate_limit_error(err_msg):
-                        print(f"Error-object rate-limit on {model}, skipping...")
+                    if response.status_code in (429, 404, 503):
+                        print(f"HTTP {response.status_code} on {model}, trying next...")
+                        await asyncio.sleep(1)
                         continue
-                    last_error = err_msg
+
+                    if APIConfig.is_rate_limit_error(body):
+                        print(f"Body rate-limit signal on {model}: {body[:120]}")
+                        await asyncio.sleep(1)
+                        continue
+
+                    if response.status_code != 200:
+                        last_error = f"HTTP {response.status_code}: {body[:200]}"
+                        print(f"Error on {model}: {last_error}")
+                        continue
+
+                    data = response.json()
+
+                    if 'error' in data:
+                        err_msg = str(data['error'])
+                        if APIConfig.is_rate_limit_error(err_msg):
+                            print(f"Error-object rate-limit on {model}, skipping...")
+                            continue
+                        last_error = err_msg
+                        continue
+
+                    if not data.get('choices'):
+                        last_error = "Empty choices in response"
+                        continue
+
+                    content = data['choices'][0]['message']['content']
+
+                    if APIConfig.is_rate_limit_error(content):
+                        print(f"Content rate-limit signal on {model}, skipping...")
+                        continue
+
+                    result = self._parse_requirements(content)
+                    if result['total_count'] > 0:
+                        print(f"Success with {model} — {result['total_count']} requirements")
+                        return result
+
+                    last_error = "No requirements parsed from response"
+                    print(f"Parse empty on {model}, trying next...")
                     continue
 
-                if not data.get('choices'):
-                    last_error = "Empty choices in response"
+                except httpx.TimeoutException:
+                    last_error = "Request timed out"
+                    print(f"Timeout on {model}")
                     continue
-
-                content = data['choices'][0]['message']['content']
-
-                # Double-check: sometimes the content itself IS the error message
-                if APIConfig.is_rate_limit_error(content):
-                    print(f"Content rate-limit signal on {model}, skipping...")
+                except Exception as e:
+                    last_error = str(e)
+                    print(f"Exception on {model}: {e}")
                     continue
-
-                result = self._parse_requirements(content)
-                if result['total_count'] > 0:
-                    print(f"Success with {model} — {result['total_count']} requirements")
-                    return result
-
-                last_error = "No requirements parsed from response"
-                print(f"Parse empty on {model}, trying next...")
-                continue
-
-            except requests.exceptions.Timeout:
-                last_error = "Request timed out"
-                print(f"Timeout on {model}")
-                continue
-            except Exception as e:
-                last_error = str(e)
-                print(f"Exception on {model}: {e}")
-                continue
 
         raise Exception(
             f"All {len(APIConfig.FREE_MODELS)} models tried without success. "

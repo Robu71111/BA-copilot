@@ -1,4 +1,4 @@
-"""Acceptance criteria generation routes"""
+"""Acceptance criteria generation routes — async"""
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -17,14 +17,13 @@ class CriteriaGenerate(BaseModel):
 @router.post("/generate")
 async def generate_criteria(data: CriteriaGenerate):
     try:
-        criteria = criteria_gen.generate(data.user_story)
+        criteria = await criteria_gen.generate(data.user_story)
         return criteria
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{story_id}")
 async def get_criteria(story_id: int):
-    # Implementation: retrieve from database
     return {"criteria": []}
 
 @router.post("/export/gherkin")
