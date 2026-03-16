@@ -7,7 +7,7 @@ import StoriesSection from './components/StoriesSection';
 import CriteriaSection from './components/CriteriaSection';
 import ProcessFlowSection from './components/ProcessFlowSection';
 import { healthApi, projectApi } from './services/api';
-import { Layers, FileText, Users, FlaskConical, Menu, X, ArrowRight, Zap, ChevronRight, GitBranch } from 'lucide-react';
+import { Layers, FileText, Users, FlaskConical, Menu, X, ArrowRight, Zap, ChevronRight, GitBranch, ExternalLink } from 'lucide-react';
 
 export default function App() {
   const [projects, setProjects] = useState([]);
@@ -124,10 +124,10 @@ export default function App() {
             </div>
           </div>
           <div>
-            <div className="footer-links-heading">Resources</div>
+            <div className="footer-links-heading">Tools</div>
             <div className="footer-links">
+              <a href="https://ai-summarizer-self.vercel.app" target="_blank" rel="noopener noreferrer" className="footer-link">AI Summarizer</a>
               <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="footer-link">OpenRouter</a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
             </div>
           </div>
           <div className="footer-status-block">
@@ -420,6 +420,14 @@ function ServicesPage({ onTryIt }) {
       features: ['End-to-end user journey map', 'Decision branch visualisation', 'SVG & code export', 'Fullscreen view'],
     },
     {
+      icon: FileText, iconColor: '#F77F00', iconBg: 'rgba(247,127,0,0.1)',
+      tag: 'free', tagLabel: 'FREE',
+      title: 'AI Summarizer',
+      desc: 'Transform lengthy text, documents, or web articles into concise summaries powered by AI. Supports translation to 7+ languages.',
+      features: ['Text, PDF, DOCX & URL input', 'Multiple summary styles & lengths', 'Export as PDF or TXT', 'Translate to 7+ languages'],
+      externalLink: 'https://ai-summarizer-self.vercel.app',
+    },
+    {
       icon: Layers, iconColor: '#F67D31', iconBg: 'rgba(246,125,49,0.1)',
       tag: 'coming', tagLabel: 'COMING SOON',
       title: 'Project Intelligence',
@@ -449,7 +457,7 @@ function ServicesPage({ onTryIt }) {
         <div style={{position:"relative"}}>
         <div className="svc-grid-bg" />
         <div className="svc-grid" style={{position:"relative",zIndex:1}}>
-          {cards.map(({ icon: Icon, iconColor, iconBg, tag, tagLabel, title, featured, desc, features }) => (
+          {cards.map((card) => { const { icon: Icon, iconColor, iconBg, tag, tagLabel, title, featured, desc, features } = card; return (
             <div key={title} className={`svc-card ${featured ? 'featured' : ''} ${tag === 'coming' ? 'coming' : ''}`}>
               {featured && <div className="svc-card-glow" />}
               <div className="svc-card-header-row">
@@ -468,12 +476,19 @@ function ServicesPage({ onTryIt }) {
                 ))}
               </div>
               {tag !== 'coming' && (
-                <button className="svc-try-btn" onClick={onTryIt} style={{'--svc-color': iconColor}}>
-                  Try it out <ArrowRight size={12} />
-                </button>
+                card.externalLink ? (
+                  <a href={card.externalLink} target="_blank" rel="noopener noreferrer"
+                    className="svc-try-btn" style={{'--svc-color': iconColor, textDecoration:'none'}}>
+                    Open Tool <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <button className="svc-try-btn" onClick={onTryIt} style={{'--svc-color': iconColor}}>
+                    Try it out <ArrowRight size={12} />
+                  </button>
+                )
               )}
             </div>
-          ))}
+          ); })}
         </div>
 
         </div>
