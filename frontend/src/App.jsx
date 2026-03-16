@@ -483,8 +483,6 @@ function ServicesPage({ onTryIt }) {
     },
   ];
 
-  const consultPills = [];
-
   return (
     <div className="services-page">
       <div className="svc-inner">
