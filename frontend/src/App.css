@@ -1032,6 +1032,27 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
   margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;
 }
 
+/* ═══════════════════════════════════════
+   SERVICES — OTHER TOOLS SECTION
+═══════════════════════════════════════ */
+.svc-tools-section {
+  margin-top:48px; margin-bottom:48px;
+}
+.svc-tools-header {
+  display:flex; align-items:center; gap:16px; margin-bottom:28px;
+}
+.svc-tools-line {
+  flex:1; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(143,1,119,0.3), rgba(246,125,49,0.3), transparent);
+}
+.svc-tools-label {
+  font-family:'Geist Mono',monospace; font-size:12px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.1em; color:var(--t2);
+  display:flex; align-items:center; gap:6px; white-space:nowrap;
+  padding:6px 16px; border-radius:20px;
+  background:var(--s2); border:1px solid var(--b1);
+}
+
 
 
 /* ═══ SERVICES 3-COL ON LARGE SCREENS ═══ */

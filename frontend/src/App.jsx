@@ -419,6 +419,9 @@ function ServicesPage({ onTryIt }) {
       desc: 'Auto-generate Mermaid.js process flow diagrams from your user stories. Export as SVG.',
       features: ['End-to-end user journey map', 'Decision branch visualisation', 'SVG & code export', 'Fullscreen view'],
     },
+  ];
+
+  const toolCards = [
     {
       icon: FileText, iconColor: '#F77F00', iconBg: 'rgba(247,127,0,0.1)',
       tag: 'free', tagLabel: 'FREE',
@@ -426,13 +429,6 @@ function ServicesPage({ onTryIt }) {
       desc: 'Transform lengthy text, documents, or web articles into concise summaries powered by AI. Supports translation to 7+ languages.',
       features: ['Text, PDF, DOCX & URL input', 'Multiple summary styles & lengths', 'Export as PDF or TXT', 'Translate to 7+ languages'],
       externalLink: 'https://ai-summarizer-self.vercel.app',
-    },
-    {
-      icon: Layers, iconColor: '#F67D31', iconBg: 'rgba(246,125,49,0.1)',
-      tag: 'coming', tagLabel: 'COMING SOON',
-      title: 'Project Intelligence',
-      desc: 'Advanced project type detection, industry-specific templates and smart requirement classification.',
-      features: ['Industry templates', 'Auto project classification', 'Compliance checking', 'Risk assessment'],
     },
   ];
 
@@ -492,6 +488,47 @@ function ServicesPage({ onTryIt }) {
         </div>
 
         </div>
+
+        {/* ── Other Tools section ── */}
+        <div className="svc-tools-section">
+          <div className="svc-tools-header">
+            <div className="svc-tools-line" />
+            <span className="svc-tools-label"><Zap size={11} /> Other Tools</span>
+            <div className="svc-tools-line" />
+          </div>
+          <div className="svc-grid" style={{position:"relative",zIndex:1}}>
+            {toolCards.map((card) => { const { icon: Icon, iconColor, iconBg, tag, tagLabel, title, desc, features } = card; return (
+              <div key={title} className="svc-card">
+                <div className="svc-card-header-row">
+                  <div className="svc-card-icon" style={{ background: iconBg, borderColor: 'var(--b1)' }}>
+                    <Icon size={22} color={iconColor} />
+                  </div>
+                  <div className="svc-card-title-block">
+                    <div className="svc-card-title">{title}</div>
+                    <div className={`svc-tag ${tag}`}>{tagLabel}</div>
+                  </div>
+                </div>
+                <div className="svc-card-desc">{desc}</div>
+                <div className="svc-card-features">
+                  {features.map(f => (
+                    <div key={f} className="svc-feat"><div className="svc-feat-dot" style={{ background: iconColor }} />{f}</div>
+                  ))}
+                </div>
+                {card.externalLink ? (
+                  <a href={card.externalLink} target="_blank" rel="noopener noreferrer"
+                    className="svc-try-btn" style={{'--svc-color': iconColor, textDecoration:'none'}}>
+                    Open Tool <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <button className="svc-try-btn" onClick={onTryIt} style={{'--svc-color': iconColor}}>
+                    Try it out <ArrowRight size={12} />
+                  </button>
+                )}
+              </div>
+            ); })}
+          </div>
+        </div>
+
         <div className="consult-banner">
           <div className="consult-inner">
             <div className="consult-title">Need hands-on <em>consultancy</em>?</div>
