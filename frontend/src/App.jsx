@@ -71,6 +71,51 @@ export default function App() {
     );
     return (
       <div className="home">
+        {/* Abstract network grid background */}
+        <svg className="home-net-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="rgba(143,1,119,0.12)" strokeWidth="0.8" fill="none">
+            <line x1="80" y1="60" x2="240" y2="140"/><line x1="240" y1="140" x2="160" y2="300"/>
+            <line x1="160" y1="300" x2="60" y2="250"/><line x1="60" y1="250" x2="80" y2="60"/>
+            <line x1="240" y1="140" x2="400" y2="80"/><line x1="400" y1="80" x2="480" y2="220"/>
+            <line x1="480" y1="220" x2="340" y2="300"/><line x1="340" y1="300" x2="160" y2="300"/>
+            <line x1="400" y1="80" x2="580" y2="50"/><line x1="580" y1="50" x2="660" y2="160"/>
+            <line x1="660" y1="160" x2="480" y2="220"/><line x1="580" y1="50" x2="760" y2="100"/>
+            <line x1="760" y1="100" x2="660" y2="160"/><line x1="760" y1="100" x2="920" y2="60"/>
+            <line x1="920" y1="60" x2="1000" y2="180"/><line x1="1000" y1="180" x2="840" y2="260"/>
+            <line x1="840" y1="260" x2="660" y2="160"/><line x1="920" y1="60" x2="1100" y2="120"/>
+            <line x1="1100" y1="120" x2="1000" y2="180"/><line x1="1100" y1="120" x2="1260" y2="80"/>
+            <line x1="1260" y1="80" x2="1340" y2="200"/><line x1="1340" y1="200" x2="1160" y2="280"/>
+            <line x1="1160" y1="280" x2="1000" y2="180"/>
+            <line x1="60" y1="250" x2="120" y2="440"/><line x1="120" y1="440" x2="280" y2="400"/>
+            <line x1="280" y1="400" x2="340" y2="300"/><line x1="280" y1="400" x2="440" y2="480"/>
+            <line x1="440" y1="480" x2="560" y2="380"/><line x1="560" y1="380" x2="480" y2="220"/>
+            <line x1="560" y1="380" x2="740" y2="420"/><line x1="740" y1="420" x2="840" y2="260"/>
+            <line x1="740" y1="420" x2="880" y2="500"/><line x1="880" y1="500" x2="1020" y2="400"/>
+            <line x1="1020" y1="400" x2="1160" y2="280"/><line x1="1020" y1="400" x2="1140" y2="520"/>
+            <line x1="1140" y1="520" x2="1340" y2="460"/><line x1="1340" y1="460" x2="1340" y2="200"/>
+            <line x1="120" y1="440" x2="200" y2="600"/><line x1="200" y1="600" x2="360" y2="560"/>
+            <line x1="360" y1="560" x2="440" y2="480"/><line x1="360" y1="560" x2="520" y2="640"/>
+            <line x1="520" y1="640" x2="680" y2="580"/><line x1="680" y1="580" x2="740" y2="420"/>
+            <line x1="680" y1="580" x2="840" y2="660"/><line x1="840" y1="660" x2="880" y2="500"/>
+            <line x1="840" y1="660" x2="1020" y2="680"/><line x1="1020" y1="680" x2="1140" y2="520"/>
+            <line x1="200" y1="600" x2="100" y2="760"/><line x1="520" y1="640" x2="460" y2="780"/>
+            <line x1="840" y1="660" x2="920" y2="800"/><line x1="1020" y1="680" x2="1200" y2="760"/>
+          </g>
+          <g fill="rgba(143,1,119,0.18)">
+            <circle cx="80" cy="60" r="2"/><circle cx="240" cy="140" r="2.5"/><circle cx="400" cy="80" r="2"/>
+            <circle cx="580" cy="50" r="2.5"/><circle cx="760" cy="100" r="2"/><circle cx="920" cy="60" r="2.5"/>
+            <circle cx="1100" cy="120" r="2"/><circle cx="1260" cy="80" r="2.5"/><circle cx="1340" cy="200" r="2"/>
+            <circle cx="480" cy="220" r="2.5"/><circle cx="660" cy="160" r="2"/><circle cx="1000" cy="180" r="2.5"/>
+            <circle cx="120" cy="440" r="2"/><circle cx="440" cy="480" r="2.5"/><circle cx="740" cy="420" r="2"/>
+            <circle cx="880" cy="500" r="2.5"/><circle cx="1140" cy="520" r="2"/><circle cx="200" cy="600" r="2.5"/>
+            <circle cx="520" cy="640" r="2"/><circle cx="840" cy="660" r="2.5"/><circle cx="1020" cy="680" r="2"/>
+          </g>
+          <g fill="rgba(222,26,88,0.25)">
+            <circle cx="660" cy="160" r="3.5"/><circle cx="480" cy="220" r="3"/>
+            <circle cx="1000" cy="180" r="3.5"/><circle cx="440" cy="480" r="3"/>
+            <circle cx="840" cy="660" r="2.5"/><circle cx="240" cy="140" r="3"/>
+          </g>
+        </svg>
         <div className="wake-banner">
           <span className="wake-dot" />
           <span className="wake-text">
@@ -127,7 +172,13 @@ export default function App() {
             <div className="footer-links-heading">Tools</div>
             <div className="footer-links">
               <a href="https://ai-summarizer-self.vercel.app" target="_blank" rel="noopener noreferrer" className="footer-link">AI Summarizer</a>
-              <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="footer-link">OpenRouter</a>
+            </div>
+          </div>
+          <div>
+            <div className="footer-links-heading">Legal</div>
+            <div className="footer-links">
+              <a href="https://ai-summarizer-self.vercel.app/privacy" target="_blank" rel="noopener noreferrer" className="footer-link">Privacy Policy</a>
+              <a href="https://ai-summarizer-self.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="footer-link">Terms of Service</a>
             </div>
           </div>
           <div className="footer-status-block">
@@ -432,11 +483,7 @@ function ServicesPage({ onTryIt }) {
     },
   ];
 
-  const consultPills = [
-    'Requirements Workshops', 'Process Documentation', 'Agile Coaching',
-    'BA Training', 'Legacy System Analysis', 'Stakeholder Mapping',
-    'Technical Writing', 'QA Strategy',
-  ];
+  const consultPills = [];
 
   return (
     <div className="services-page">
@@ -531,13 +578,14 @@ function ServicesPage({ onTryIt }) {
 
         <div className="consult-banner">
           <div className="consult-inner">
-            <div className="consult-title">Need hands-on <em>consultancy</em>?</div>
+            <div className="consult-title">About <em>me</em></div>
             <p className="consult-sub">
-              Beyond the platform — strategic business analysis, requirements workshops,
-              stakeholder alignment and full BA project delivery.
+              Hey! I'm Vishva — a 25-year-old Business Analyst with nearly 2 years of hands-on experience
+              in healthcare and e-commerce. Currently pursuing my Master's degree while building AI-powered
+              tools that make BA work less painful. Part analyst, part builder, full-time nerd for clean requirements. ⚡
             </p>
             <div className="consult-pills">
-              {consultPills.map(p => <span key={p} className="consult-pill">{p}</span>)}
+              {['Business Analysis', 'Healthcare', 'E-Commerce', 'Agile & Scrum', 'Master\'s Student', 'AI Enthusiast', 'Requirements Engineering', 'Process Mapping'].map(p => <span key={p} className="consult-pill">{p}</span>)}
             </div>
             <div className="consult-contact">
               <div className="consult-contact-label">Contact me</div>

@@ -262,6 +262,12 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 ═══════════════════════════════════════ */
 .home { flex:1; overflow-y:auto; display:flex; flex-direction:column; position:relative }
 
+/* Abstract network grid — SVG behind hero */
+.home-net-bg {
+  position:absolute; top:0; left:0; right:0; width:100%; height:auto;
+  z-index:0; pointer-events:none; min-height:900px;
+}
+
 /* Full-page mesh gradient */
 .home::before {
   content:''; position:fixed; top:var(--topnav); left:0; right:0; bottom:0; z-index:0; pointer-events:none;
@@ -1036,28 +1042,23 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
    SERVICES — OTHER TOOLS SECTION
 ═══════════════════════════════════════ */
 .svc-tools-section {
-  margin-top:56px; margin-bottom:48px;
+  margin-top:48px; margin-bottom:48px;
 }
 .svc-tools-header {
-  display:flex; align-items:center; gap:20px; margin-bottom:36px;
+  display:flex; align-items:center; gap:16px; margin-bottom:28px;
 }
 .svc-tools-line {
-  flex:1; height:2px;
-  background:linear-gradient(90deg, transparent, var(--p2) 30%, var(--p3) 50%, var(--p4) 70%, transparent);
-  opacity:0.6;
+  flex:1; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(143,1,119,0.3), rgba(246,125,49,0.3), transparent);
 }
 .svc-tools-label {
-  font-family:"Geist Mono", monospace; font: size 20px; font-weight:700;
-  letter-spacing:-0.3px; color:var(--t1);
-  display:flex; align-items:center; gap:9px; white-space:nowrap;
-  padding:10px 24px; border-radius:12px;
-  background:linear-gradient(135deg, rgba(143,1,119,0.12), rgba(222,26,88,0.08));
-  border:1px solid rgba(143,1,119,0.25);
-  box-shadow:0 0 20px rgba(143,1,119,0.08);
+  font-family:'Geist Mono',monospace; font-size:12px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.1em; color:var(--t2);
+  display:flex; align-items:center; gap:6px; white-space:nowrap;
+  padding:6px 16px; border-radius:20px;
+  background:var(--s2); border:1px solid var(--b1);
 }
-.svc-tools-label svg {
-  color:#d97dbc;
-}
+
 
 
 /* ═══ SERVICES 3-COL ON LARGE SCREENS ═══ */
