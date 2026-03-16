@@ -16,19 +16,16 @@ class APIConfig:
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
     # ── MODEL CONFIGURATION ───────────────────────────────────────────────────
-    # openrouter/free = OpenRouter's dynamic router — picks the best available
-    # free model automatically. Much more reliable than hardcoding specific models
-    # that can go offline. Falls back to named models only if the router fails.
+    # Removed invalid model IDs (openrouter/gpt-4o:free doesn't exist).
+    # Ordered by reliability: auto-router first, then proven free models.
     FREE_MODELS = [
-        "openrouter/auto:free",  # Primary: dynamic best-available
-        "openrouter/free",       # Fallback 1: dynamic best-available (legacy name)
-        "openrouter/gpt-4o:free",  # Fallback 2: most capable free model
-        "meta-llama/llama-3.3-70b-instruct:free",  # Fallback 1: most capable free
-        "deepseek/deepseek-chat-v3-0324:free",      # Fallback 2: strong reasoning
-        "google/gemma-3-27b-it:free",               # Fallback 3: reliable
-        "google/gemma-3-12b-it:free",               # Fallback 4
-        "mistralai/mistral-7b-instruct:free",       # Fallback 5: fast and stable
-        "meta-llama/llama-3.1-8b-instruct:free",   # Fallback 6: lightweight
+        "openrouter/auto:free",                       # Primary: auto-picks best available
+        "meta-llama/llama-3.3-70b-instruct:free",     # Fallback 1: most capable free
+        "deepseek/deepseek-chat-v3-0324:free",        # Fallback 2: strong reasoning
+        "google/gemma-3-27b-it:free",                 # Fallback 3: reliable
+        "google/gemma-3-12b-it:free",                 # Fallback 4: fast
+        "mistralai/mistral-7b-instruct:free",         # Fallback 5: lightweight
+        "meta-llama/llama-3.1-8b-instruct:free",     # Fallback 6: last resort
     ]
 
     CHAT_MODEL = FREE_MODELS[0]
@@ -42,6 +39,7 @@ class APIConfig:
         "too many requests", "context limit exceeded",
         "provider error", "no endpoints",
         "no endpoints found", "model not found",
+        "not a valid model", "invalid model",
         "overloaded", "capacity", "unavailable",
         "not found", "does not exist", "deprecated",
         "maintenance", "timeout", "service unavailable",

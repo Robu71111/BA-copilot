@@ -1,14 +1,10 @@
 """
-AI Prompt Templates — v4
+AI Prompt Templates — v5
 ========================
-Key improvements over v3:
-  - Chain-of-thought: model reasons BEFORE outputting (dramatically reduces hallucination)
-  - Few-shot examples: concrete good/bad examples for every template
-  - Self-correction pass built into requirements prompt
-  - Stricter NFR enforcement with keyword heuristic examples
-  - User story prompt uses role taxonomy — no more generic "user"
-  - Acceptance criteria forces edge cases with concrete failure mode examples
-  - NEW: process_flow_diagram — generates Mermaid.js flowchart from stories
+Key improvements over v4:
+  - CRITICAL FIX: requirements prompt now explicitly forbids duplicates across sections
+  - Added dedup verification step before output
+  - process_flow_diagram prompt unchanged
 """
 
 
@@ -26,31 +22,33 @@ Before extracting, silently identify: Who are the actors? What actions/features 
 
 STEP 2 — DEFINITIONS
 
-FUNCTIONAL REQUIREMENT (FR) = WHAT the system must DO
-  Test: Can you write a test case to check this is implemented? Yes = FR
-  GOOD: The system shall allow users to register using email and password
-  GOOD: The system shall send an order confirmation email within 30 seconds
-  GOOD: The system shall integrate with Stripe for card processing
-  BAD:  The system shall respond within 2 seconds (performance = NFR)
-  BAD:  The system shall be available 99.9% of time (availability = NFR)
+FUNCTIONAL REQUIREMENT (FR) = WHAT the system must DO — a specific feature, action, or behaviour
+  Test: "Can a developer implement this as a specific feature?" Yes = FR
+  GOOD FR: The system shall allow users to register using email and password
+  GOOD FR: The system shall send an order confirmation email within 30 seconds
+  GOOD FR: The system shall calculate tax based on the user's ZIP code
+  NOT FR: The system shall respond within 2 seconds (this is PERFORMANCE = NFR)
+  NOT FR: The system shall be available 99.9% of the time (this is AVAILABILITY = NFR)
+  NOT FR: The system shall encrypt data at rest (this is SECURITY = NFR)
+  NOT FR: The system shall support 10,000 users (this is SCALABILITY = NFR)
 
-NON-FUNCTIONAL REQUIREMENT (NFR) = HOW WELL the system performs
-  Categories: Performance, Scalability, Security, Reliability, Availability, Compliance, Usability
-  Test: Does this describe a quality attribute rather than a feature? Yes = NFR
-  GOOD: The system shall respond to API requests within 200ms under normal load
-  GOOD: The system shall support 10,000 concurrent users without degradation
-  GOOD: The system shall encrypt all PII at rest using AES-256
-  GOOD: The system shall comply with GDPR data residency requirements
-  BAD:  The system shall allow password reset (feature = FR)
-  BAD:  The system shall log user actions (capability = FR)
+NON-FUNCTIONAL REQUIREMENT (NFR) = HOW WELL the system performs — quality attributes only
+  NFR categories: Performance, Scalability, Security, Reliability, Availability, Compliance, Usability
+  Test: "Does this describe a measurable quality attribute, NOT a feature?" Yes = NFR
+  GOOD NFR: The system shall respond to API requests within 200ms under normal load
+  GOOD NFR: The system shall support 10,000 concurrent users without degradation
+  GOOD NFR: The system shall encrypt all PII at rest using AES-256
+  NOT NFR: The system shall allow password reset (this is a FEATURE = FR)
 
-STEP 3 — SELF-CHECK (apply before writing each requirement)
-  a) Is this requirement unique — not a paraphrase of another?
-  b) Is it in the correct section?
-  c) Does it start with "The system shall"?
-  d) For NFRs: does it include a measurable qualifier (e.g. "within 200ms", "99.9% uptime")?
+STEP 3 — CLASSIFICATION DECISION TREE (apply to EVERY requirement)
+  Q1: Does this describe a user-facing feature or action? → FR
+  Q2: Does this describe performance, scalability, security, availability, or compliance? → NFR
+  Q3: Could this appear in both categories? → Pick the PRIMARY intent. If it describes WHAT to do → FR. If it describes HOW WELL → NFR.
 
-STEP 4 — OUTPUT IN THIS EXACT FORMAT:
+STEP 4 — DEDUPLICATION CHECK
+  Before writing output, verify: NO requirement text appears in BOTH the FR and NFR sections. If you find a duplicate, REMOVE it from the wrong section. A requirement about response time is ALWAYS NFR. A requirement about encryption is ALWAYS NFR. A requirement about concurrent users is ALWAYS NFR.
+
+STEP 5 — OUTPUT IN THIS EXACT FORMAT:
 
 ## Functional Requirements
 
@@ -63,11 +61,13 @@ STEP 4 — OUTPUT IN THIS EXACT FORMAT:
 - NFR-002: The system shall [complete quality attribute requirement]
 
 ABSOLUTE RULES:
-1. Every requirement appears EXACTLY ONCE — never repeated across sections
-2. Generate 6-12 FRs and 3-6 NFRs
-3. No intro, no summary, no commentary — only the two sections
-4. Each requirement must be unique, complete, and testable
-5. NFRs must include a measurable qualifier where possible
+1. A requirement MUST appear in EXACTLY ONE section — NEVER in both FR and NFR
+2. If the same concept could be FR or NFR, classify it ONCE based on primary intent
+3. Generate 6-12 FRs and 3-6 NFRs
+4. No intro, no summary, no commentary — only the two sections
+5. Each requirement must be unique, complete, and testable
+6. NFRs must include a measurable qualifier where possible
+7. Performance, scalability, security, availability, compliance requirements are ALWAYS NFR — never FR
 
 INPUT TEXT:
 {raw_text}

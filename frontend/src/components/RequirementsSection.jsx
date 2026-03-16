@@ -1,7 +1,55 @@
 import React, { useState } from 'react';
 import { requirementsApi } from '../services/api';
-import { ScanText, Download, CheckCircle, AlertTriangle, ListChecks, Settings2 } from 'lucide-react';
+import { ScanText, Download, CheckCircle, AlertTriangle, ListChecks, Settings2, Pencil, Check, X } from 'lucide-react';
 import LoadingOverlay from './LoadingOverlay';
+
+function EditableReqItem({ req, onUpdate }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(req.description);
+
+  const save = () => {
+    if (draft.trim().length > 10) {
+      onUpdate(draft.trim());
+      setEditing(false);
+    }
+  };
+
+  const cancel = () => { setDraft(req.description); setEditing(false); };
+
+  if (editing) {
+    return (
+      <div className="req-item req-item-editing">
+        <span className={`req-code ${req.req_type === 'Functional' ? 'rc-f' : 'rc-n'}`}>{req.req_code}</span>
+        <div style={{flex:1, display:'flex', flexDirection:'column', gap:8}}>
+          <textarea
+            className="req-edit-input"
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            rows={2}
+            autoFocus
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); } if (e.key === 'Escape') cancel(); }}
+          />
+          <div style={{display:'flex', gap:6}}>
+            <button className="btn btn-primary btn-sm" onClick={save} style={{padding:'5px 12px', fontSize:12}}>
+              <Check size={10}/> Save
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={cancel} style={{padding:'5px 12px', fontSize:12}}>
+              <X size={10}/> Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="req-item" onClick={() => setEditing(true)} style={{cursor:'pointer'}} title="Click to edit">
+      <span className={`req-code ${req.req_type === 'Functional' ? 'rc-f' : 'rc-n'}`}>{req.req_code}</span>
+      <span className="req-desc">{req.description}</span>
+      <Pencil size={12} style={{flexShrink:0, color:'var(--t3)', opacity:0, transition:'opacity 0.15s'}} className="req-edit-icon"/>
+    </div>
+  );
+}
 
 export default function RequirementsSection({ inputId, projectType='General', industry='General', onComplete, onReset }) {
   const [loading, setLoading] = useState(false);
@@ -21,6 +69,22 @@ export default function RequirementsSection({ inputId, projectType='General', in
   const regenerate = () => {
     setReqs(null); setError(null);
     if (onReset) onReset();
+  };
+
+  const updateFR = (index, newDesc) => {
+    const updated = { ...reqs };
+    updated.functional = [...updated.functional];
+    updated.functional[index] = { ...updated.functional[index], description: newDesc };
+    setReqs(updated);
+    onComplete(updated);
+  };
+
+  const updateNFR = (index, newDesc) => {
+    const updated = { ...reqs };
+    updated.non_functional = [...updated.non_functional];
+    updated.non_functional[index] = { ...updated.non_functional[index], description: newDesc };
+    setReqs(updated);
+    onComplete(updated);
   };
 
   const downloadMd = () => {
@@ -79,28 +143,27 @@ export default function RequirementsSection({ inputId, projectType='General', in
                   <Settings2 size={11}/> Regenerate
                 </button>
               </div>
-              {reqs.functional.length > 0 && <>
-                <div className="group-title">
-                  <ListChecks size={12} color="var(--p2)"/> Functional Requirements
+              <div className="output-scroll-box">
+                <div className="edit-hint">
+                  <Pencil size={11}/> Click any requirement to edit it
                 </div>
-                {reqs.functional.map((r,i) => (
-                  <div key={i} className="req-item">
-                    <span className="req-code rc-f">{r.req_code}</span>
-                    <span className="req-desc">{r.description}</span>
+                {reqs.functional.length > 0 && <>
+                  <div className="group-title">
+                    <ListChecks size={12} color="var(--p2)"/> Functional Requirements
                   </div>
-                ))}
-              </>}
-              {reqs.non_functional.length > 0 && <>
-                <div className="group-title">
-                  <Settings2 size={12} color="var(--green)"/> Non-Functional Requirements
-                </div>
-                {reqs.non_functional.map((r,i) => (
-                  <div key={i} className="req-item">
-                    <span className="req-code rc-n">{r.req_code}</span>
-                    <span className="req-desc">{r.description}</span>
+                  {reqs.functional.map((r,i) => (
+                    <EditableReqItem key={i} req={r} onUpdate={(desc) => updateFR(i, desc)} />
+                  ))}
+                </>}
+                {reqs.non_functional.length > 0 && <>
+                  <div className="group-title">
+                    <Settings2 size={12} color="var(--green)"/> Non-Functional Requirements
                   </div>
-                ))}
-              </>}
+                  {reqs.non_functional.map((r,i) => (
+                    <EditableReqItem key={i} req={r} onUpdate={(desc) => updateNFR(i, desc)} />
+                  ))}
+                </>}
+              </div>
             </>
           )}
         </div>

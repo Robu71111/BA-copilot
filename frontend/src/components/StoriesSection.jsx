@@ -1,9 +1,97 @@
 import React, { useState } from 'react';
 import { storiesApi } from '../services/api';
-import { RefreshCw, BookOpen, Table, Download, CheckCircle, AlertTriangle, Flag, Hash, GitBranch, StickyNote } from 'lucide-react';
+import { RefreshCw, BookOpen, Table, Download, CheckCircle, AlertTriangle, Flag, Hash, GitBranch, StickyNote, Pencil, Check, X } from 'lucide-react';
 import LoadingOverlay from './LoadingOverlay';
 
 const pClass = (p) => { if(!p) return 'tag-low'; const l=p.toLowerCase(); if(l==='high') return 'tag-high'; if(l==='medium') return 'tag-med'; return 'tag-low'; };
+
+function EditableStoryCard({ story, index, onUpdate }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ ...story });
+
+  const save = () => {
+    onUpdate(index, draft);
+    setEditing(false);
+  };
+
+  const cancel = () => { setDraft({ ...story }); setEditing(false); };
+
+  if (editing) {
+    return (
+      <div className="story-card story-card-editing">
+        <div className="s-head">
+          <span className="s-code">{story.story_code}</span>
+          <input
+            className="req-edit-input"
+            value={draft.title}
+            onChange={e => setDraft({...draft, title: e.target.value})}
+            style={{flex:1, fontSize:15, fontWeight:700, padding:'6px 10px'}}
+            placeholder="Story title"
+          />
+        </div>
+        <textarea
+          className="req-edit-input"
+          value={draft.user_story}
+          onChange={e => setDraft({...draft, user_story: e.target.value})}
+          rows={3}
+          style={{marginBottom:10, fontSize:14, lineHeight:1.7}}
+          placeholder="As a [role], I want [feature], so that [benefit]"
+        />
+        <div style={{display:'flex', gap:10, alignItems:'center', flexWrap:'wrap', marginBottom:10}}>
+          <label style={{fontSize:12, color:'var(--t2)', fontFamily:'Geist Mono,monospace'}}>Priority:</label>
+          <select
+            value={draft.priority}
+            onChange={e => setDraft({...draft, priority: e.target.value})}
+            className="f-select"
+            style={{width:'auto', marginBottom:0, padding:'6px 28px 6px 10px', fontSize:13}}
+          >
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <label style={{fontSize:12, color:'var(--t2)', fontFamily:'Geist Mono,monospace'}}>Points:</label>
+          <select
+            value={draft.story_points}
+            onChange={e => setDraft({...draft, story_points: parseInt(e.target.value)})}
+            className="f-select"
+            style={{width:'auto', marginBottom:0, padding:'6px 28px 6px 10px', fontSize:13}}
+          >
+            {[1,2,3,5,8,13].map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </div>
+        <div style={{display:'flex', gap:6}}>
+          <button className="btn btn-primary btn-sm" onClick={save} style={{padding:'5px 14px', fontSize:12}}>
+            <Check size={10}/> Save
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={cancel} style={{padding:'5px 14px', fontSize:12}}>
+            <X size={10}/> Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="story-card" onClick={() => setEditing(true)} style={{cursor:'pointer'}} title="Click to edit">
+      <div className="s-head">
+        <span className="s-code">{story.story_code}</span>
+        <span className="s-title">{story.title}</span>
+        <Pencil size={12} style={{flexShrink:0, color:'var(--t3)', opacity:0, marginLeft:'auto'}} className="req-edit-icon"/>
+      </div>
+      <div className="s-body">{story.user_story}</div>
+      <div className="s-tags">
+        <span className={`tag ${pClass(story.priority)}`}><Flag size={9}/> {story.priority}</span>
+        <span className="tag tag-pts"><Hash size={9}/> {story.story_points} pts</span>
+        {story.dependencies && story.dependencies !== 'None' && (
+          <span className="tag tag-dep"><GitBranch size={9}/> {story.dependencies}</span>
+        )}
+      </div>
+      {story.notes && story.notes !== 'None' && (
+        <div className="s-notes"><StickyNote size={9} style={{display:'inline',marginRight:4}}/>{story.notes}</div>
+      )}
+    </div>
+  );
+}
 
 export default function StoriesSection({ requirements, projectType='General', onComplete, onReset }) {
   const [loading, setLoading] = useState(false);
@@ -26,9 +114,16 @@ export default function StoriesSection({ requirements, projectType='General', on
     finally { setLoading(false); }
   };
 
+  const updateStory = (index, updatedStory) => {
+    const updated = { ...stories };
+    updated.stories = [...updated.stories];
+    updated.stories[index] = updatedStory;
+    setStories(updated);
+    onComplete(updated);
+  };
+
   const exportJira = async () => {
     try {
-      // Pass the stories data correctly — storiesApi.exportJira handles the shape
       const r = await storiesApi.exportJira(stories);
       const url = URL.createObjectURL(new Blob([r.csv],{type:'text/csv'}));
       Object.assign(document.createElement('a'),{href:url,download:'jira_import.csv'}).click();
@@ -86,25 +181,14 @@ export default function StoriesSection({ requirements, projectType='General', on
                   <button className="btn btn-secondary btn-sm" onClick={regenerate} title="Regenerate stories"><RefreshCw size={11}/> Regenerate</button>
                 </div>
               </div>
-              {stories.stories.map((s,i) => (
-                <div key={i} className="story-card">
-                  <div className="s-head">
-                    <span className="s-code">{s.story_code}</span>
-                    <span className="s-title">{s.title}</span>
-                  </div>
-                  <div className="s-body">{s.user_story}</div>
-                  <div className="s-tags">
-                    <span className={`tag ${pClass(s.priority)}`}><Flag size={9}/> {s.priority}</span>
-                    <span className="tag tag-pts"><Hash size={9}/> {s.story_points} pts</span>
-                    {s.dependencies && s.dependencies !== 'None' && (
-                      <span className="tag tag-dep"><GitBranch size={9}/> {s.dependencies}</span>
-                    )}
-                  </div>
-                  {s.notes && s.notes !== 'None' && (
-                    <div className="s-notes"><StickyNote size={9} style={{display:'inline',marginRight:4}}/>{s.notes}</div>
-                  )}
+              <div className="output-scroll-box">
+                <div className="edit-hint">
+                  <Pencil size={11}/> Click any story to edit it
                 </div>
-              ))}
+                {stories.stories.map((s,i) => (
+                  <EditableStoryCard key={i} story={s} index={i} onUpdate={updateStory} />
+                ))}
+              </div>
             </>
           )}
         </div>
