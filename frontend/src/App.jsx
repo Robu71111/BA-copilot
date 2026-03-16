@@ -73,7 +73,7 @@ export default function App() {
       <div className="home">
         {/* Abstract network grid background */}
         <svg className="home-net-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <g stroke="rgba(143,1,119,0.12)" strokeWidth="0.8" fill="none">
+          <g stroke="rgba(143,1,119,0.28)" strokeWidth="1" fill="none">
             <line x1="80" y1="60" x2="240" y2="140"/><line x1="240" y1="140" x2="160" y2="300"/>
             <line x1="160" y1="300" x2="60" y2="250"/><line x1="60" y1="250" x2="80" y2="60"/>
             <line x1="240" y1="140" x2="400" y2="80"/><line x1="400" y1="80" x2="480" y2="220"/>
@@ -101,7 +101,7 @@ export default function App() {
             <line x1="200" y1="600" x2="100" y2="760"/><line x1="520" y1="640" x2="460" y2="780"/>
             <line x1="840" y1="660" x2="920" y2="800"/><line x1="1020" y1="680" x2="1200" y2="760"/>
           </g>
-          <g fill="rgba(143,1,119,0.18)">
+          <g fill="rgba(143,1,119,0.35)">
             <circle cx="80" cy="60" r="2"/><circle cx="240" cy="140" r="2.5"/><circle cx="400" cy="80" r="2"/>
             <circle cx="580" cy="50" r="2.5"/><circle cx="760" cy="100" r="2"/><circle cx="920" cy="60" r="2.5"/>
             <circle cx="1100" cy="120" r="2"/><circle cx="1260" cy="80" r="2.5"/><circle cx="1340" cy="200" r="2"/>
@@ -110,7 +110,7 @@ export default function App() {
             <circle cx="880" cy="500" r="2.5"/><circle cx="1140" cy="520" r="2"/><circle cx="200" cy="600" r="2.5"/>
             <circle cx="520" cy="640" r="2"/><circle cx="840" cy="660" r="2.5"/><circle cx="1020" cy="680" r="2"/>
           </g>
-          <g fill="rgba(222,26,88,0.25)">
+          <g fill="rgba(222,26,88,0.45)">
             <circle cx="660" cy="160" r="3.5"/><circle cx="480" cy="220" r="3"/>
             <circle cx="1000" cy="180" r="3.5"/><circle cx="440" cy="480" r="3"/>
             <circle cx="840" cy="660" r="2.5"/><circle cx="240" cy="140" r="3"/>
@@ -255,11 +255,11 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
   };
 
   const steps = [
-    { num:'01', label:'Input',    desc:'Paste text, upload doc or record voice',          color:'#8f9fff' },
-    { num:'02', label:'Extract',  desc:'AI extracts functional & non-functional reqs',    color:'#d97dbc' },
-    { num:'03', label:'Stories',  desc:'Scrum user stories with story points',            color:'#f47ba0' },
+    { num:'01', label:'Input',    desc:'Paste text, upload doc or record voice',          color:'#8F0177' },
+    { num:'02', label:'Extract',  desc:'AI extracts functional & non-functional reqs',    color:'#DE1A58' },
+    { num:'03', label:'Stories',  desc:'Scrum user stories with story points',            color:'#d97dbc' },
     { num:'04', label:'Criteria', desc:'Gherkin BDD acceptance scenarios',                color:'#F67D31' },
-    { num:'05', label:'Flow',     desc:'Auto-generate process flow diagram',              color:'#22c55e' },
+    { num:'05', label:'Flow',     desc:'Auto-generate process flow diagram',              color:'#8F0177' },
   ];
 
   if (!current) {
@@ -482,6 +482,8 @@ function ServicesPage({ onTryIt }) {
       externalLink: 'https://ai-summarizer-self.vercel.app',
     },
   ];
+
+  const consultPills = [];
 
   return (
     <div className="services-page">

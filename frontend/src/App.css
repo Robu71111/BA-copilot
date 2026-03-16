@@ -265,7 +265,7 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 /* Abstract network grid — SVG behind hero */
 .home-net-bg {
   position:absolute; top:0; left:0; right:0; width:100%; height:auto;
-  z-index:0; pointer-events:none; min-height:900px;
+  z-index:1; pointer-events:none; min-height:900px;
 }
 
 /* Full-page mesh gradient */
@@ -278,17 +278,9 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
     radial-gradient(ellipse 30% 25% at 70% 100%,  rgba(246,125,49,0.08) 0%, transparent 50%);
 }
 
-/* Dot grid overlay */
-.home::after {
-  content:''; position:fixed; top:var(--topnav); left:0; right:0; bottom:0; z-index:0; pointer-events:none;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size:40px 40px;
-  mask-image:radial-gradient(ellipse 80% 70% at 50% 30%, black 20%, transparent 80%);
-}
-
 /* HERO — centred */
 .hero {
-  position:relative; z-index:1;
+  position:relative; z-index:2;
   padding:80px 40px 0;
   text-align:center;
   display:flex; flex-direction:column; align-items:center;
