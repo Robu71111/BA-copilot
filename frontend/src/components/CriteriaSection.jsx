@@ -125,7 +125,7 @@ export default function CriteriaSection({ userStories }) {
         )}
 
         {criteria?.criteria?.length > 0 && (
-          <div style={{marginTop:24}}>
+          <div className="output-scroll-box" style={{marginTop:24}}>
             <div className="group-title" style={{marginTop:0}}>
               <FlaskConical size={12} color="#a78bfa"/>
               <span>{criteria.criteria.length} scenario{criteria.criteria.length !== 1 ? 's' : ''} generated</span>
