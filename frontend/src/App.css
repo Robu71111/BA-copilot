@@ -54,6 +54,7 @@ body {
   background:var(--bg); color:var(--t1);
   -webkit-font-smoothing:antialiased;
   line-height:1.6; overflow:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 button { font-family:inherit; cursor:pointer }
 input,textarea,select { font-family:inherit; color:var(--t1) }
@@ -703,6 +704,8 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 .workflow {
   flex:1; overflow-y:auto; overflow-x:hidden;
   padding:40px 60px 80px; position:relative;
+  -webkit-overflow-scrolling:touch;
+  will-change:scroll-position;
 }
 .workflow::before {
   content:''; position:fixed; top:var(--topnav); left:0; right:0; bottom:0; z-index:0; pointer-events:none;
@@ -740,8 +743,9 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
 .card-sub { font-size:16px; color:var(--t2); line-height:1.7 }
 
 /* Tabs */
-.tabs { display:flex; gap:2px; padding:4px; background:var(--s2); border:1px solid var(--b1); border-radius:10px; margin-bottom:18px; width:fit-content; max-width:100%; overflow-x:auto }
-.tab { display:flex; align-items:center; gap:6px; padding:9px 18px; border-radius:8px; border:none; background:transparent; color:var(--t2); font-size:15px; font-weight:500; transition:all 0.14s; white-space:nowrap }
+.tabs { display:flex; gap:2px; padding:4px; background:var(--s2); border:1px solid var(--b1); border-radius:10px; margin-bottom:18px; width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none }
+.tabs::-webkit-scrollbar { display:none }
+.tab { display:flex; align-items:center; gap:6px; padding:9px 18px; border-radius:8px; border:none; background:transparent; color:var(--t2); font-size:15px; font-weight:500; transition:all 0.14s; white-space:nowrap; flex:0 0 auto }
 .tab:hover { color:var(--t1) }
 .tab.active { background:var(--s1); color:var(--t1); box-shadow:0 1px 6px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05); border:1px solid var(--b1) }
 .tab-badge { font-family:'Geist Mono',monospace; font-size:11px; font-weight:700; padding:2px 7px; border-radius:8px; background:var(--p2-bg); color:#d97dbc; border:1px solid rgba(143,1,119,0.2) }
@@ -884,6 +888,7 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
   margin-top:4px;
   scrollbar-width:thin;
   scrollbar-color:var(--s4) transparent;
+  -webkit-overflow-scrolling:touch;
 }
 .output-scroll-box::-webkit-scrollbar { width:5px }
 .output-scroll-box::-webkit-scrollbar-track { background:transparent }
@@ -1094,8 +1099,8 @@ input,textarea,select { font-family:inherit; color:var(--t1) }
   .hero-ctas     { flex-direction:column; align-items:center }
   .btn-hero-primary, .btn-hero-secondary { width:100%; justify-content:center }
   .card-body  { padding:18px 20px }
-  .tabs       { flex-wrap:wrap; width:100% }
-  .tab        { flex:1; justify-content:center; min-width:0; padding:9px 12px; font-size:13px }
+  .tabs       { width:100% }
+  .tab        { flex:0 0 auto; justify-content:center; padding:9px 14px; font-size:13px; white-space:nowrap }
   .action-row { flex-direction:column; align-items:stretch; gap:12px }
   .a-right    { width:100%; flex-wrap:wrap }
   .a-right .btn { flex:1; justify-content:center; min-width:0 }
