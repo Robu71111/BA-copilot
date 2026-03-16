@@ -16,16 +16,23 @@ class APIConfig:
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
     # ── MODEL CONFIGURATION ───────────────────────────────────────────────────
-    # Removed invalid model IDs (openrouter/gpt-4o:free doesn't exist).
-    # Ordered by reliability: auto-router first, then proven free models.
+    # openrouter/free = OpenRouter's free-only router. It randomly picks from
+    # all available free models and filters by capability. If it fails, we
+    # fall back to specific named free models ordered by quality.
+    #
+    # List updated March 2026 from https://openrouter.ai/collections/free-models
+    # Only includes models with Tool calling support (needed for structured output).
     FREE_MODELS = [
-        "openrouter/auto:free",                       # Primary: auto-picks best available
-        "meta-llama/llama-3.3-70b-instruct:free",     # Fallback 1: most capable free
-        "deepseek/deepseek-chat-v3-0324:free",        # Fallback 2: strong reasoning
-        "google/gemma-3-27b-it:free",                 # Fallback 3: reliable
-        "google/gemma-3-12b-it:free",                 # Fallback 4: fast
-        "mistralai/mistral-7b-instruct:free",         # Fallback 5: lightweight
-        "meta-llama/llama-3.1-8b-instruct:free",     # Fallback 6: last resort
+        "openrouter/free",                                    # Auto-router: picks best available free model
+        "meta-llama/llama-3.3-70b-instruct:free",            # 128K ctx, tools — best general purpose
+        "mistralai/mistral-small-3.1-24b-instruct:free",     # 128K ctx, vision+tools — very reliable
+        "google/gemma-3-27b-it:free",                        # 131K ctx, vision+tools
+        "nvidia/nemotron-3-super-120b-a12b:free",            # 262K ctx, tools+reasoning — powerful
+        "qwen/qwen3-coder:free",                             # 262K ctx, tools — great for structured output
+        "openai/gpt-oss-120b:free",                          # 131K ctx, tools
+        "nvidia/nemotron-nano-9b-v2:free",                   # 128K ctx, tools — fast lightweight
+        "google/gemma-3-12b-it:free",                        # 33K ctx, vision
+        "qwen/qwen3-4b:free",                                # 41K ctx, tools — last resort
     ]
 
     CHAT_MODEL = FREE_MODELS[0]
@@ -40,6 +47,8 @@ class APIConfig:
         "provider error", "no endpoints",
         "no endpoints found", "model not found",
         "not a valid model", "invalid model",
+        "insufficient credits", "never purchased",
+        "payment required", "billing",
         "overloaded", "capacity", "unavailable",
         "not found", "does not exist", "deprecated",
         "maintenance", "timeout", "service unavailable",
@@ -64,7 +73,6 @@ class APIConfig:
         lower = text.lower()
         return any(sig in lower for sig in APIConfig.SKIP_SIGNALS)
 
-    # Keep old name as alias so existing code doesn't break
     @staticmethod
     def is_rate_limit_error(text: str) -> bool:
         return APIConfig.should_skip(text)
