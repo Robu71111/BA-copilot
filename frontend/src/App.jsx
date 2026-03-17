@@ -174,6 +174,7 @@ export default function App() {
             <div className="footer-links-heading">Tools</div>
             <div className="footer-links">
               <a href="https://ai-summarizer-self.vercel.app" target="_blank" rel="noopener noreferrer" className="footer-link">AI Summarizer</a>
+              <a href="https://specweaver-sooty.vercel.app" target="_blank" rel="noopener noreferrer" className="footer-link">SpecWeaver</a>
             </div>
           </div>
           <div>
@@ -496,7 +497,7 @@ function ServicesPage({ onTryIt }) {
       title: 'Specweaver',
       desc: 'Dual-persona AI architecture generator. Boardroom clarity for executives, Engine Room precision for engineers — from the same input.',
       features: ['Executive summary & tech spec modes', 'Mermaid architecture diagrams', 'SQL schemas & REST API specs', 'Security analysis & edge cases'],
-      externalLink: 'https://specweaver.vercel.app',
+      externalLink: 'https://specweaver-sooty.vercel.app',
     },
   ];
 
