@@ -588,9 +588,8 @@ function ServicesPage({ onTryIt }) {
           <div className="consult-inner">
             <div className="consult-title">About <em>me</em></div>
             <p className="consult-sub">
-              Hey! I'm Vishva — a 25-year-old Business Analyst with nearly 2 years of hands-on experience
-              in healthcare and e-commerce. Currently pursuing my Master's degree while building AI-powered
-              tools that make work more impactful and enjoyable.
+              {"Hey! I'm Vishva — a 25-year-old Business Analyst with nearly 2 years of hands-on experience in healthcare and e-commerce. Currently pursuing my Master's degree while building AI-powered tools that make work less painful and more efficient."}
+            </p>
             <div className="consult-pills">
               {['Business Analysis', 'Healthcare', 'E-Commerce', 'Agile & Scrum', 'Master\'s Student', 'AI Enthusiast', 'Requirements Engineering', 'Process Mapping'].map(p => <span key={p} className="consult-pill">{p}</span>)}
             </div>
@@ -656,7 +655,7 @@ function LegalPage({ title, content, onBack }) {
           onMouseEnter={e => e.currentTarget.style.color='var(--t1)'}
           onMouseLeave={e => e.currentTarget.style.color='var(--t3)'}
         >
-          ← Back to Home
+          &larr; Back to Home
         </button>
         <h1 style={{
           fontSize:'clamp(28px, 4vw, 40px)', fontWeight:800,
@@ -673,8 +672,8 @@ function LegalPage({ title, content, onBack }) {
         }}>
           <p style={{color:'#d97dbc', fontWeight:600, fontSize:14, margin:0}}>
             {title === 'Privacy Policy'
-              ? '🛡️ Your privacy matters. We collect minimal data and never sell your information.'
-              : '📋 By using BA Copilot, you agree to these terms. Please read them carefully.'}
+              ? 'Your privacy matters. We collect minimal data and never sell your information.'
+              : 'By using BA Copilot, you agree to these terms. Please read them carefully.'}
           </p>
         </div>
 
