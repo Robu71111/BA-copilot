@@ -60,6 +60,8 @@ export default function App() {
 
   const renderPage = () => {
     if (page === 'services') return <ServicesPage onTryIt={() => setPage('workspace')} />;
+    if (page === 'privacy') return <LegalPage title="Privacy Policy" onBack={() => setPage('home')} content={privacyContent} />;
+    if (page === 'terms') return <LegalPage title="Terms of Service" onBack={() => setPage('home')} content={termsContent} />;
     if (page === 'workspace') return (
       <WorkspacePage
         current={current} projects={projects}
@@ -177,8 +179,8 @@ export default function App() {
           <div>
             <div className="footer-links-heading">Legal</div>
             <div className="footer-links">
-              <a href="https://ai-summarizer-self.vercel.app/privacy" target="_blank" rel="noopener noreferrer" className="footer-link">Privacy Policy</a>
-              <a href="https://ai-summarizer-self.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="footer-link">Terms of Service</a>
+              <button className="footer-link" onClick={() => setPage('privacy')}>Privacy Policy</button>
+              <button className="footer-link" onClick={() => setPage('terms')}>Terms of Service</button>
             </div>
           </div>
           <div className="footer-status-block">
@@ -360,7 +362,14 @@ function WorkspacePage({ current, projects, onSelect, onCreate, onDelete, input,
                   textAlign:'center', padding:'48px 24px',
                   color:'var(--t3)', fontSize:14, fontFamily:'Geist,sans-serif', lineHeight:1.7,
                 }}>
-                  <div style={{fontSize:32, marginBottom:12}}>📋</div>
+                  <div style={{
+                    width:56, height:56, borderRadius:14, margin:'0 auto 16px',
+                    background:'linear-gradient(135deg, rgba(143,1,119,0.15), rgba(222,26,88,0.1))',
+                    border:'1px solid rgba(143,1,119,0.2)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                  }}>
+                    <FileText size={24} color="#d97dbc" />
+                  </div>
                   No projects yet.<br/>Create your first one above.
                 </div>
               )}
@@ -483,6 +492,7 @@ function ServicesPage({ onTryIt }) {
     },
   ];
 
+
   return (
     <div className="services-page">
       <div className="svc-inner">
@@ -580,8 +590,7 @@ function ServicesPage({ onTryIt }) {
             <p className="consult-sub">
               Hey! I'm Vishva — a 25-year-old Business Analyst with nearly 2 years of hands-on experience
               in healthcare and e-commerce. Currently pursuing my Master's degree while building AI-powered
-              tools that make BA work less painful. Part analyst, part builder, full-time nerd for clean requirements. ⚡
-            </p>
+              tools that make work more impactful and enjoyable.
             <div className="consult-pills">
               {['Business Analysis', 'Healthcare', 'E-Commerce', 'Agile & Scrum', 'Master\'s Student', 'AI Enthusiast', 'Requirements Engineering', 'Process Mapping'].map(p => <span key={p} className="consult-pill">{p}</span>)}
             </div>
@@ -605,6 +614,76 @@ function ServicesPage({ onTryIt }) {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+const privacyContent = [
+  { title: '1. Information We Collect', text: 'BA Copilot is designed with privacy in mind. Text content you submit (text, uploaded files, voice transcripts) is sent to AI processing services to generate requirements, stories, and criteria. This content is processed in real-time and is not stored permanently on our servers after processing. Your project data is stored in a database to enable workspace functionality. Local preferences like theme settings are stored in your browser.' },
+  { title: '2. How We Use Your Information', text: 'The text you submit is used solely to generate your requested analysis output. It is sent to third-party AI model providers (via OpenRouter) for processing. We do not use your content to train AI models, share your content with third parties beyond the AI processing provider, or track or profile individual users.' },
+  { title: '3. Third-Party Services', text: 'We use OpenRouter to route AI requests to various model providers for text analysis. Vercel hosts the frontend application, and Render hosts the backend API. Google Fonts and Lucide provide typography and icons. Each service\'s own privacy policy applies to their respective processing.' },
+  { title: '4. Data Security', text: 'All communications between your browser and our services are encrypted using HTTPS/TLS. File uploads are processed in memory and discarded after text extraction. Project data stored in the database is accessible only through authenticated API endpoints.' },
+  { title: '5. Your Rights', text: 'You can delete your projects and all associated data at any time using the workspace interface. Clearing your browser\'s localStorage will remove all locally stored preferences. You may request complete data deletion by contacting us.' },
+  { title: '6. Cookies', text: 'BA Copilot does not use cookies. All user preferences are stored using your browser\'s localStorage, which is entirely client-side and not transmitted to any server.' },
+  { title: '7. Changes to This Policy', text: 'We may update this privacy policy from time to time. Changes will be reflected on this page. Continued use of the service after changes constitutes acceptance of the revised policy.' },
+  { title: '8. Contact', text: 'If you have questions about this privacy policy, reach us at vishvashukla.16@gmail.com.' },
+];
+
+const termsContent = [
+  { title: '1. Acceptance of Terms', text: 'By accessing and using BA Copilot ("the Service"), you accept and agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.' },
+  { title: '2. Description of Service', text: 'BA Copilot is a free, web-based AI-powered business analysis platform. The Service allows you to submit text, documents, or voice transcripts for automated requirements extraction, user story generation, acceptance criteria creation, and process flow diagram generation.' },
+  { title: '3. Free Service & Availability', text: 'BA Copilot is provided free of charge. We make no guarantees regarding uptime, availability, or response times. The Service relies on third-party AI model providers, and availability may be affected by their service status. We reserve the right to modify, suspend, or discontinue the Service at any time without notice.' },
+  { title: '4. User Responsibilities', text: 'When using the Service, you agree not to submit content that is illegal, harmful, or objectionable; not to use the Service to process content you do not have the right to use; not to attempt to reverse-engineer, hack, or exploit the Service; and to take responsibility for the content you submit and how you use the generated outputs.' },
+  { title: '5. Intellectual Property', text: 'You retain all rights to the content you submit. AI-generated outputs (requirements, stories, criteria, diagrams) are provided as tool outputs — you are free to use, modify, and distribute them. The BA Copilot brand, design, and code are the property of the Service operator.' },
+  { title: '6. Accuracy Disclaimer', text: 'AI-generated outputs are produced by machine learning models and may contain inaccuracies, omissions, or misinterpretations. The Service is provided "as is" without warranties of any kind. You should always review and verify generated outputs before using them in professional contexts.' },
+  { title: '7. Limitation of Liability', text: 'To the maximum extent permitted by law, BA Copilot and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service.' },
+  { title: '8. Privacy', text: 'Your use of the Service is also governed by our Privacy Policy. By using the Service, you consent to the practices described therein.' },
+  { title: '9. Changes', text: 'We reserve the right to modify these Terms at any time. Your continued use after changes constitutes acceptance.' },
+  { title: '10. Contact', text: 'For questions about these terms, contact us at vishvashukla.16@gmail.com.' },
+];
+
+function LegalPage({ title, content, onBack }) {
+  return (
+    <div className="home" style={{padding:0}}>
+      <div style={{maxWidth:760, margin:'0 auto', padding:'40px 24px 80px'}}>
+        <button onClick={onBack} style={{
+          display:'inline-flex', alignItems:'center', gap:6,
+          fontSize:13, fontWeight:600, color:'var(--t3)',
+          background:'none', border:'none', cursor:'pointer',
+          marginBottom:32, transition:'color 0.15s', fontFamily:'Geist,sans-serif',
+        }}
+          onMouseEnter={e => e.currentTarget.style.color='var(--t1)'}
+          onMouseLeave={e => e.currentTarget.style.color='var(--t3)'}
+        >
+          ← Back to Home
+        </button>
+        <h1 style={{
+          fontSize:'clamp(28px, 4vw, 40px)', fontWeight:800,
+          letterSpacing:'-1.5px', color:'var(--t1)', marginBottom:8,
+        }}>{title}</h1>
+        <div style={{
+          fontSize:12, fontFamily:'Geist Mono,monospace',
+          color:'var(--t3)', marginBottom:40,
+        }}>Last updated: March 17, 2026</div>
+
+        <div style={{
+          background:'rgba(143,1,119,0.08)', border:'1px solid rgba(143,1,119,0.2)',
+          borderRadius:12, padding:'16px 20px', marginBottom:32,
+        }}>
+          <p style={{color:'#d97dbc', fontWeight:600, fontSize:14, margin:0}}>
+            {title === 'Privacy Policy'
+              ? '🛡️ Your privacy matters. We collect minimal data and never sell your information.'
+              : '📋 By using BA Copilot, you agree to these terms. Please read them carefully.'}
+          </p>
+        </div>
+
+        {content.map((section, i) => (
+          <div key={i} style={{marginBottom:28}}>
+            <h2 style={{fontSize:17, fontWeight:700, color:'var(--t1)', marginBottom:10, letterSpacing:'-0.3px'}}>{section.title}</h2>
+            <p style={{fontSize:15, color:'var(--t2)', lineHeight:1.8}}>{section.text}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
