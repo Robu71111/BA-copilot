@@ -490,6 +490,14 @@ function ServicesPage({ onTryIt }) {
       features: ['Text, PDF, DOCX & URL input', 'Multiple summary styles & lengths', 'Export as PDF or TXT', 'Translate to 7+ languages'],
       externalLink: 'https://ai-summarizer-self.vercel.app',
     },
+    {
+      icon: Layers, iconColor: '#22d3ee', iconBg: 'rgba(34,211,238,0.1)',
+      tag: 'free', tagLabel: 'FREE',
+      title: 'Specweaver',
+      desc: 'Dual-persona AI architecture generator. Boardroom clarity for executives, Engine Room precision for engineers — from the same input.',
+      features: ['Executive summary & tech spec modes', 'Mermaid architecture diagrams', 'SQL schemas & REST API specs', 'Security analysis & edge cases'],
+      externalLink: 'https://specweaver.vercel.app',
+    },
   ];
 
 
