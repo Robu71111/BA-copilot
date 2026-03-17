@@ -590,9 +590,9 @@ function ServicesPage({ onTryIt }) {
             <p className="consult-sub">
               {"Hey! I'm Vishva — a 25-year-old Business Analyst with nearly 2 years of hands-on experience in healthcare and e-commerce. Currently pursuing my Master's degree while building AI-powered tools that make work less painful and more efficient."}
             </p>
-            <div className="consult-pills">
+            {/* <div className="consult-pills">
               {['Business Analysis', 'Healthcare', 'E-Commerce', 'Agile & Scrum', 'Master\'s Student', 'AI Enthusiast', 'Requirements Engineering', 'Process Mapping'].map(p => <span key={p} className="consult-pill">{p}</span>)}
-            </div>
+            </div> */}
             <div className="consult-contact">
               <div className="consult-contact-label">Contact me</div>
               <div className="consult-contact-links">
